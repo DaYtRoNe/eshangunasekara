@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { ArrowUpRight, ArrowUp, Heart } from 'lucide-react';
-import { FaGithub, FaLinkedin, FaTwitter } from 'react-icons/fa';
+import { FaGithub, FaLinkedin, FaTwitter, FaWhatsapp } from 'react-icons/fa';
 
 const Footer = () => {
   const [time, setTime] = useState("");
@@ -89,8 +89,9 @@ const Footer = () => {
                 <h4 className="text-gray-500 font-semibold mb-8 tracking-widest uppercase text-xs">Socials</h4>
                 <ul className="space-y-5">
                   {[
-                    { name: 'LinkedIn', icon: <FaLinkedin/>, url: '#' },
-                    { name: 'GitHub', icon: <FaGithub/>, url: '#' },
+                    { name: 'LinkedIn', icon: <FaLinkedin/>, url: 'https://www.linkedin.com/in/eshan-gunasekara-83b9761b2' },
+                    { name: 'WhatsApp', icon: <FaWhatsapp/>, url: 'https://wa.me/94778157227' },
+                    { name: 'GitHub', icon: <FaGithub/>, url: 'https://github.com/DaYtRoNe' },
                     { name: 'Twitter', icon: <FaTwitter/>, url: '#' }
                   ].map((social) => (
                     <li key={social.name}>

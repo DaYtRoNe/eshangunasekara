@@ -1,7 +1,7 @@
 import React, { useEffect } from 'react';
 import { motion, useMotionValue, useSpring, useTransform } from 'framer-motion';
 import { ArrowRight, Code2, Cpu, MapPin, Sparkles } from 'lucide-react';
-import { FaGithub, FaLinkedin } from 'react-icons/fa';
+import { FaGithub, FaLinkedin, FaWhatsapp } from 'react-icons/fa';
 import { Link } from 'react-scroll';
 
 const FloatingNode = ({ icon, text, delay, className, mouseX, mouseY, depth }) => {
@@ -151,8 +151,11 @@ const Hero = () => {
           </Link>
 
           <div className="flex items-center gap-5">
-            <a href="https://linkedin.com/in/eshangunasekara" target="_blank" rel="noreferrer" className="p-5 glass rounded-2xl border border-white/10 hover:border-primary/50 text-gray-400 hover:text-white transition-all hover:-translate-y-1 hover:shadow-[0_0_20px_rgba(170,59,255,0.3)] cursor-hover group">
+            <a href="https://www.linkedin.com/in/eshan-gunasekara-83b9761b2" target="_blank" rel="noreferrer" className="p-5 glass rounded-2xl border border-white/10 hover:border-primary/50 text-gray-400 hover:text-white transition-all hover:-translate-y-1 hover:shadow-[0_0_20px_rgba(170,59,255,0.3)] cursor-hover group">
               <FaLinkedin className="w-7 h-7 group-hover:scale-110 transition-transform" />
+            </a>
+            <a href="https://wa.me/94778157227" target="_blank" rel="noreferrer" className="p-5 glass rounded-2xl border border-white/10 hover:border-primary/50 text-gray-400 hover:text-white transition-all hover:-translate-y-1 hover:shadow-[0_0_20px_rgba(170,59,255,0.3)] cursor-hover group">
+              <FaWhatsapp className="w-7 h-7 group-hover:scale-110 transition-transform" />
             </a>
             <a href="https://github.com/DaYtRoNe" target="_blank" rel="noreferrer" className="p-5 glass rounded-2xl border border-white/10 hover:border-primary/50 text-gray-400 hover:text-white transition-all hover:-translate-y-1 hover:shadow-[0_0_20px_rgba(170,59,255,0.3)] cursor-hover group">
               <FaGithub className="w-7 h-7 group-hover:scale-110 transition-transform" />

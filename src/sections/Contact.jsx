@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Mail, Phone, MapPin, Send, CheckCircle2, Copy, Loader2 } from 'lucide-react';
-import { FaGithub, FaLinkedin, FaTwitter } from 'react-icons/fa';
+import { FaGithub, FaLinkedin, FaTwitter, FaWhatsapp } from 'react-icons/fa';
 import createGlobe from 'cobe';
 
 // 3D Globe Component
@@ -213,9 +213,9 @@ const Contact = () => {
               className="flex items-center gap-4 mt-2 glass px-6 py-4 rounded-3xl border border-white/10 w-max shadow-xl"
             >
               {[
-                { icon: <FaGithub className="w-5 h-5" />, href: "#" },
-                { icon: <FaLinkedin className="w-5 h-5" />, href: "#" },
-                { icon: <FaTwitter className="w-5 h-5" />, href: "#" }
+                { icon: <FaLinkedin className="w-5 h-5" />, href: "https://www.linkedin.com/in/eshan-gunasekara-83b9761b2" },
+                { icon: <FaWhatsapp className="w-5 h-5" />, href: "https://wa.me/94778157227" },
+                { icon: <FaGithub className="w-5 h-5" />, href: "https://github.com/DaYtRoNe" }
               ].map((link, idx) => (
                 <motion.a
                   key={idx}
