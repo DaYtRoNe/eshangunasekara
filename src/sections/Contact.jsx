@@ -55,7 +55,7 @@ const typewriterTexts = [
   "Hey Eshan, let's collaborate!"
 ];
 
-import { doc, getDoc } from 'firebase/firestore';
+import { doc, getDoc, collection, addDoc, serverTimestamp } from 'firebase/firestore';
 import { db } from '../config/firebase';
 
 const Contact = () => {
@@ -109,19 +109,36 @@ const Contact = () => {
     return () => clearTimeout(timeout);
   }, [placeholder, isDeleting, textIndex]);
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     setFormState('submitting');
     
-    // Simulate EmailJS Network Request
-    setTimeout(() => {
+    const formData = new FormData(e.target);
+    const name = formData.get('name');
+    const email = formData.get('email');
+    const subject = formData.get('subject');
+    const message = formData.get('message');
+    
+    try {
+      await addDoc(collection(db, 'messages'), {
+        name,
+        email,
+        subject,
+        message,
+        unread: true,
+        createdAt: serverTimestamp()
+      });
+      
       setFormState('success');
-      // Reset form after 3 seconds
       setTimeout(() => {
         setFormState('idle');
         e.target.reset();
       }, 3000);
-    }, 2000);
+    } catch (error) {
+      console.error("Error submitting message:", error);
+      setFormState('idle');
+      // Ideally show a toast error here, but keeping it simple for now
+    }
   };
 
   return (

@@ -5,6 +5,7 @@ import ProjectsManager from '../components/admin/ProjectsManager';
 import ExperienceManager from '../components/admin/ExperienceManager';
 import EducationManager from '../components/admin/EducationManager';
 import SkillsManager from '../components/admin/SkillsManager';
+import MessagesManager from '../components/admin/MessagesManager';
 
 const AdminDashboard = () => {
   const [activeTab, setActiveTab] = useState('settings');
@@ -21,6 +22,8 @@ const AdminDashboard = () => {
         return <EducationManager />;
       case 'skills':
         return <SkillsManager />;
+      case 'messages':
+        return <MessagesManager />;
       default:
         return null;
     }

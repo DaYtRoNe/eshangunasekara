@@ -1,13 +1,24 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useAuth } from '../../context/AuthContext';
-import { LogOut, LayoutDashboard, Settings, Briefcase, GraduationCap, Code2, FolderGit2, Menu, X } from 'lucide-react';
+import { LogOut, LayoutDashboard, Settings, Briefcase, GraduationCap, Code2, FolderGit2, Menu, X, Mail } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import toast from 'react-hot-toast';
+import { db } from '../../config/firebase';
+import { collection, query, where, onSnapshot } from 'firebase/firestore';
 
 const AdminSidebar = ({ activeTab, setActiveTab }) => {
   const { logout, currentUser } = useAuth();
   const navigate = useNavigate();
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const [unreadCount, setUnreadCount] = useState(0);
+
+  useEffect(() => {
+    const q = query(collection(db, 'messages'), where('unread', '==', true));
+    const unsubscribe = onSnapshot(q, (snapshot) => {
+      setUnreadCount(snapshot.size);
+    });
+    return () => unsubscribe();
+  }, []);
 
   const handleLogout = async () => {
     try {
@@ -24,6 +35,7 @@ const AdminSidebar = ({ activeTab, setActiveTab }) => {
     { id: 'experience', label: 'Experience', icon: <Briefcase className="w-5 h-5" /> },
     { id: 'education', label: 'Education', icon: <GraduationCap className="w-5 h-5" /> },
     { id: 'skills', label: 'Skills', icon: <Code2 className="w-5 h-5" /> },
+    { id: 'messages', label: 'Inbox', icon: <Mail className="w-5 h-5" /> },
   ];
 
   return (
@@ -69,14 +81,21 @@ const AdminSidebar = ({ activeTab, setActiveTab }) => {
                 setActiveTab(item.id);
                 setIsMobileMenuOpen(false); // Close on mobile after click
               }}
-              className={`w-full flex items-center gap-3 px-4 py-3 rounded-xl font-medium transition-all ${
+              className={`w-full flex items-center justify-between px-4 py-3 rounded-xl font-medium transition-all ${
                 activeTab === item.id 
                   ? 'bg-primary text-white shadow-[0_0_15px_rgba(170,59,255,0.3)]' 
                   : 'text-gray-400 hover:text-white hover:bg-white/5'
               }`}
             >
-              {item.icon}
-              {item.label}
+              <div className="flex items-center gap-3">
+                {item.icon}
+                {item.label}
+              </div>
+              {item.id === 'messages' && unreadCount > 0 && (
+                <span className="bg-red-500 text-white text-xs font-bold px-2 py-0.5 rounded-full">
+                  {unreadCount}
+                </span>
+              )}
             </button>
           ))}
         </nav>
