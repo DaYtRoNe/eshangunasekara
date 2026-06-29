@@ -17,6 +17,7 @@ import Footer from './components/Footer';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import AdminApp from './pages/AdminApp';
 import NotFound from './pages/NotFound';
+import AllProjects from './pages/AllProjects';
 
 const Portfolio = () => {
   const [loading, setLoading] = useState(true);
@@ -75,6 +76,7 @@ function App() {
         <CustomCursor />
         <Routes>
           <Route path="/" element={<Portfolio />} />
+          <Route path="/projects" element={<AllProjects />} />
           <Route path="/admin/*" element={<AdminApp />} />
           <Route path="*" element={<NotFound />} />
         </Routes>

@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Code2, ExternalLink, Monitor, Smartphone, Globe } from 'lucide-react';
+import { Code2, ExternalLink, Monitor, Smartphone, Globe, ArrowRight } from 'lucide-react';
 import { FaGithub } from 'react-icons/fa';
+import { Link } from 'react-router-dom';
 
 import { collection, getDocs, orderBy, query } from 'firebase/firestore';
 import { db } from '../config/firebase';
@@ -79,26 +80,32 @@ const Projects = () => {
           <h2 className="text-4xl md:text-5xl font-bold font-outfit mb-4 text-white tracking-wide">Featured <span className="text-primary">Projects</span></h2>
           <div className="w-24 h-1 bg-gradient-to-r from-primary to-transparent rounded-full mb-10" />
           
-          {/* Filter Bar */}
-          <div className="flex flex-wrap justify-center gap-2 p-1.5 glass rounded-full border border-white/10 shadow-lg">
-            {categories.map((cat) => (
-              <button
-                key={cat}
-                onClick={() => setActiveFilter(cat)}
-                className={`relative px-6 py-2 rounded-full text-sm font-medium transition-colors cursor-hover ${
-                  activeFilter === cat ? 'text-white' : 'text-gray-400 hover:text-gray-200'
-                }`}
-              >
-                {activeFilter === cat && (
-                  <motion.div
-                    layoutId="activeFilter"
-                    className="absolute inset-0 bg-primary/20 border border-primary/50 rounded-full"
-                    transition={{ type: "spring", bounce: 0.2, duration: 0.6 }}
-                  />
-                )}
-                <span className="relative z-10">{cat}</span>
-              </button>
-            ))}
+          {/* Filter Bar with Count */}
+          <div className="w-full max-w-4xl flex flex-col md:flex-row items-center justify-between gap-4">
+            <div className="flex flex-wrap justify-center gap-2 p-1.5 glass rounded-full border border-white/10 shadow-lg">
+              {categories.map((cat) => (
+                <button
+                  key={cat}
+                  onClick={() => setActiveFilter(cat)}
+                  className={`relative px-6 py-2 rounded-full text-sm font-medium transition-colors cursor-hover ${
+                    activeFilter === cat ? 'text-white' : 'text-gray-400 hover:text-gray-200'
+                  }`}
+                >
+                  {activeFilter === cat && (
+                    <motion.div
+                      layoutId="activeFilter"
+                      className="absolute inset-0 bg-primary/20 border border-primary/50 rounded-full"
+                      transition={{ type: "spring", bounce: 0.2, duration: 0.6 }}
+                    />
+                  )}
+                  <span className="relative z-10">{cat}</span>
+                </button>
+              ))}
+            </div>
+            
+            <div className="text-gray-400 text-sm font-mono tracking-wider">
+              {projects.length} projects
+            </div>
           </div>
         </motion.div>
 
@@ -107,7 +114,7 @@ const Projects = () => {
           className="grid md:grid-cols-2 xl:grid-cols-3 gap-8"
         >
           <AnimatePresence mode="popLayout">
-            {filteredProjects.map((project, idx) => {
+            {filteredProjects.slice(0, 6).map((project, idx) => {
               // We check hover by title to maintain stable state across filtering
               const isHovered = hoveredIndex === project.title;
               const isAnotherHovered = hoveredIndex !== null && hoveredIndex !== project.title;
@@ -179,6 +186,23 @@ const Projects = () => {
             })}
           </AnimatePresence>
         </motion.div>
+
+        {projects.length > 6 && (
+          <motion.div 
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            className="flex justify-center mt-16"
+          >
+            <Link 
+              to="/projects"
+              className="group flex items-center gap-3 px-8 py-4 glass rounded-full font-bold text-white border border-white/10 hover:border-primary/50 hover:bg-primary/10 transition-all cursor-hover"
+            >
+              View All Projects
+              <ArrowRight className="w-5 h-5 transition-transform group-hover:translate-x-1" />
+            </Link>
+          </motion.div>
+        )}
       </div>
     </section>
   );
