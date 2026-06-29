@@ -23,9 +23,9 @@ const LocationGlobe = () => {
       diffuse: 1.2,
       mapSamples: 16000,
       mapBrightness: 6,
-      baseColor: [0.1, 0.08, 0.15],
+      baseColor: [1, 1, 1],
       markerColor: [0.66, 0.23, 1], // Primary Color
-      glowColor: [0.2, 0.1, 0.3],
+      glowColor: [1, 1, 1],
       markers: [
         { location: [7.4675, 80.6234], size: 0.1 } // Matale, Sri Lanka
       ],
@@ -59,7 +59,6 @@ import { doc, getDoc } from 'firebase/firestore';
 import { db } from '../config/firebase';
 
 const Contact = () => {
-  const [copiedField, setCopiedField] = useState(null);
   const [formState, setFormState] = useState('idle'); // idle, submitting, success
   
   const [settings, setSettings] = useState({
@@ -110,12 +109,6 @@ const Contact = () => {
     return () => clearTimeout(timeout);
   }, [placeholder, isDeleting, textIndex]);
 
-  const handleCopy = (field, text) => {
-    navigator.clipboard.writeText(text);
-    setCopiedField(field);
-    setTimeout(() => setCopiedField(null), 2000);
-  };
-
   const handleSubmit = (e) => {
     e.preventDefault();
     setFormState('submitting');
@@ -160,12 +153,12 @@ const Contact = () => {
           <div className="lg:col-span-5 flex flex-col gap-6">
             
             {/* Email Card */}
-            <motion.div
+            <motion.a
               initial={{ opacity: 0, x: -50 }}
               whileInView={{ opacity: 1, x: 0 }}
               viewport={{ once: false, amount: 0.2 }}
-              onClick={() => handleCopy('email', 'eshangunsekara@gmail.com')}
-              className="glass-card p-6 flex items-center justify-between cursor-hover hover:border-primary/40 transition-all shadow-lg group relative overflow-hidden h-28"
+              href="mailto:eshangunsekara@gmail.com"
+              className="glass-card p-6 flex items-center justify-between cursor-hover hover:border-primary/40 transition-all shadow-lg group relative overflow-hidden h-28 block"
             >
               <div className="absolute inset-0 bg-gradient-to-r from-primary/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
               <div className="flex items-center gap-5 relative z-10">
@@ -177,19 +170,18 @@ const Contact = () => {
                   <p className="text-white font-medium">eshangunsekara@gmail.com</p>
                 </div>
               </div>
-              <div className="relative z-10 text-gray-400 group-hover:text-primary transition-colors pr-2">
-                {copiedField === 'email' ? <CheckCircle2 className="w-5 h-5 text-green-400" /> : <Copy className="w-5 h-5 opacity-0 group-hover:opacity-100 transition-opacity" />}
-              </div>
-            </motion.div>
+            </motion.a>
 
             {/* Phone Card */}
-            <motion.div
+            <motion.a
               initial={{ opacity: 0, x: -50 }}
               whileInView={{ opacity: 1, x: 0 }}
               viewport={{ once: false, amount: 0.2 }}
               transition={{ delay: 0.1 }}
-              onClick={() => handleCopy('phone', '+94778157227')}
-              className="glass-card p-6 flex items-center justify-between cursor-hover hover:border-primary/40 transition-all shadow-lg group relative overflow-hidden h-28"
+              href={settings.whatsappUrl}
+              target="_blank"
+              rel="noreferrer"
+              className="glass-card p-6 flex items-center justify-between cursor-hover hover:border-primary/40 transition-all shadow-lg group relative overflow-hidden h-28 block"
             >
               <div className="absolute inset-0 bg-gradient-to-r from-primary/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
               <div className="flex items-center gap-5 relative z-10">
@@ -201,10 +193,7 @@ const Contact = () => {
                   <p className="text-white font-medium">+94 77 815 7227</p>
                 </div>
               </div>
-              <div className="relative z-10 text-gray-400 group-hover:text-primary transition-colors pr-2">
-                {copiedField === 'phone' ? <CheckCircle2 className="w-5 h-5 text-green-400" /> : <Copy className="w-5 h-5 opacity-0 group-hover:opacity-100 transition-opacity" />}
-              </div>
-            </motion.div>
+            </motion.a>
 
             {/* Location Card with 3D Globe */}
             <motion.div
