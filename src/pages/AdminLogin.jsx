@@ -25,17 +25,20 @@ const AdminLogin = () => {
       toast.success("Welcome back, Admin!");
       navigate('/admin/dashboard');
     } catch (error) {
-      console.error(error);
       // Auto-register logic for the first time setup
       if ((error.code === 'auth/user-not-found' || error.code === 'auth/invalid-credential') && email === 'eshangunsekara@gmail.com') {
         try {
-          // If the user hasn't been created yet, create them.
-          toast.loading("Setting up Admin account...", { id: 'setup' });
+          // If the user hasn't been created yet, attempt to create them.
           await createUserWithEmailAndPassword(auth, email, password);
           toast.success("Admin account configured!", { id: 'setup' });
           navigate('/admin/dashboard');
         } catch (createError) {
-          toast.error("Failed to setup account: " + createError.message, { id: 'setup' });
+          if (createError.code === 'auth/email-already-in-use') {
+            // User exists, so the initial invalid-credential was just a wrong password.
+            toast.error("Invalid credentials.");
+          } else {
+            toast.error("Failed to setup account: " + createError.message);
+          }
         }
       } else {
         toast.error("Invalid credentials or user not found.");

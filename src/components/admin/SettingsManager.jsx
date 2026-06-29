@@ -1,8 +1,9 @@
 import React, { useState, useEffect, useCallback } from 'react';
-import { db, storage } from '../../config/firebase';
+import { db, storage, auth } from '../../config/firebase';
 import { doc, getDoc, setDoc } from 'firebase/firestore';
 import { ref, uploadBytes, getDownloadURL } from 'firebase/storage';
-import { Save, Upload, Loader2, Link as LinkIcon, FileText, User, X, Check } from 'lucide-react';
+import { EmailAuthProvider, reauthenticateWithCredential, updatePassword } from 'firebase/auth';
+import { Save, Upload, Loader2, Link as LinkIcon, FileText, User, X, Check, Lock, ShieldCheck } from 'lucide-react';
 import toast from 'react-hot-toast';
 import Cropper from 'react-easy-crop';
 import getCroppedImg from '../../utils/cropImage';
@@ -14,6 +15,14 @@ const SettingsManager = () => {
   const [avatarFile, setAvatarFile] = useState(null);
   const [avatarPreview, setAvatarPreview] = useState('');
   const [isDragging, setIsDragging] = useState(false);
+  
+  // Password Change States
+  const [isUpdatingPassword, setIsUpdatingPassword] = useState(false);
+  const [pwdData, setPwdData] = useState({
+    currentPassword: '',
+    newPassword: '',
+    confirmPassword: ''
+  });
   
   // Cropper States
   const [imageToCrop, setImageToCrop] = useState(null);
@@ -207,6 +216,63 @@ const SettingsManager = () => {
     }
   };
 
+  const handlePwdChange = (e) => {
+    const { name, value } = e.target;
+    setPwdData(prev => ({ ...prev, [name]: value }));
+  };
+
+  const handleChangePassword = async (e) => {
+    e.preventDefault();
+    
+    if (!pwdData.currentPassword || !pwdData.newPassword || !pwdData.confirmPassword) {
+      toast.error('Please fill in all password fields');
+      return;
+    }
+
+    if (pwdData.newPassword !== pwdData.confirmPassword) {
+      toast.error('New passwords do not match');
+      return;
+    }
+
+    if (pwdData.newPassword.length < 6) {
+      toast.error('New password must be at least 6 characters');
+      return;
+    }
+
+    setIsUpdatingPassword(true);
+    const toastId = toast.loading('Updating password...');
+
+    try {
+      const user = auth.currentUser;
+      if (!user) throw new Error("No authenticated user found");
+
+      // Re-authenticate
+      const credential = EmailAuthProvider.credential(user.email, pwdData.currentPassword);
+      await reauthenticateWithCredential(user, credential);
+
+      // Update password
+      await updatePassword(user, pwdData.newPassword);
+
+      toast.success('Password updated successfully!', { id: toastId });
+      
+      // Clear fields
+      setPwdData({
+        currentPassword: '',
+        newPassword: '',
+        confirmPassword: ''
+      });
+    } catch (error) {
+      console.error(error);
+      let errorMessage = 'Failed to update password';
+      if (error.code === 'auth/invalid-credential') {
+        errorMessage = 'Current password is incorrect';
+      }
+      toast.error(errorMessage, { id: toastId });
+    } finally {
+      setIsUpdatingPassword(false);
+    }
+  };
+
   if (loading) {
     return (
       <div className="flex items-center justify-center h-64">
@@ -372,57 +438,124 @@ const SettingsManager = () => {
           </div>
         </div>
 
-        {/* Right Column (Social Links) */}
-        <div className="glass-card p-6 rounded-2xl border border-white/5 h-fit">
-          <h3 className="text-xl font-bold font-outfit text-white mb-6 flex items-center gap-2">
-            <LinkIcon className="w-5 h-5 text-primary" />
-            Social Links
-          </h3>
-          <div className="space-y-5">
-            <div>
-              <label className="block text-sm font-medium text-gray-400 mb-2">LinkedIn URL</label>
-              <input
-                type="text"
-                name="linkedinUrl"
-                value={formData.linkedinUrl}
-                onChange={handleChange}
-                className="w-full bg-dark-800 border border-white/10 rounded-xl p-3 text-white focus:outline-none focus:border-primary transition-colors"
-                placeholder="https://linkedin.com/in/..."
-              />
+        {/* Right Column (Social Links & Security) */}
+        <div className="space-y-8 h-fit">
+          <div className="glass-card p-6 rounded-2xl border border-white/5">
+            <h3 className="text-xl font-bold font-outfit text-white mb-6 flex items-center gap-2">
+              <LinkIcon className="w-5 h-5 text-primary" />
+              Social Links
+            </h3>
+            <div className="space-y-5">
+              <div>
+                <label className="block text-sm font-medium text-gray-400 mb-2">LinkedIn URL</label>
+                <input
+                  type="text"
+                  name="linkedinUrl"
+                  value={formData.linkedinUrl}
+                  onChange={handleChange}
+                  className="w-full bg-dark-800 border border-white/10 rounded-xl p-3 text-white focus:outline-none focus:border-primary transition-colors"
+                  placeholder="https://linkedin.com/in/..."
+                />
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-gray-400 mb-2">GitHub URL</label>
+                <input
+                  type="text"
+                  name="githubUrl"
+                  value={formData.githubUrl}
+                  onChange={handleChange}
+                  className="w-full bg-dark-800 border border-white/10 rounded-xl p-3 text-white focus:outline-none focus:border-primary transition-colors"
+                  placeholder="https://github.com/..."
+                />
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-gray-400 mb-2">WhatsApp Number / Link</label>
+                <input
+                  type="text"
+                  name="whatsappUrl"
+                  value={formData.whatsappUrl}
+                  onChange={handleChange}
+                  className="w-full bg-dark-800 border border-white/10 rounded-xl p-3 text-white focus:outline-none focus:border-primary transition-colors"
+                  placeholder="https://wa.me/9477..."
+                />
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-gray-400 mb-2">Twitter (X) URL</label>
+                <input
+                  type="text"
+                  name="twitterUrl"
+                  value={formData.twitterUrl}
+                  onChange={handleChange}
+                  className="w-full bg-dark-800 border border-white/10 rounded-xl p-3 text-white focus:outline-none focus:border-primary transition-colors"
+                  placeholder="https://twitter.com/..."
+                />
+              </div>
             </div>
-            <div>
-              <label className="block text-sm font-medium text-gray-400 mb-2">GitHub URL</label>
-              <input
-                type="text"
-                name="githubUrl"
-                value={formData.githubUrl}
-                onChange={handleChange}
-                className="w-full bg-dark-800 border border-white/10 rounded-xl p-3 text-white focus:outline-none focus:border-primary transition-colors"
-                placeholder="https://github.com/..."
-              />
-            </div>
-            <div>
-              <label className="block text-sm font-medium text-gray-400 mb-2">WhatsApp Number / Link</label>
-              <input
-                type="text"
-                name="whatsappUrl"
-                value={formData.whatsappUrl}
-                onChange={handleChange}
-                className="w-full bg-dark-800 border border-white/10 rounded-xl p-3 text-white focus:outline-none focus:border-primary transition-colors"
-                placeholder="https://wa.me/9477..."
-              />
-            </div>
-            <div>
-              <label className="block text-sm font-medium text-gray-400 mb-2">Twitter (X) URL</label>
-              <input
-                type="text"
-                name="twitterUrl"
-                value={formData.twitterUrl}
-                onChange={handleChange}
-                className="w-full bg-dark-800 border border-white/10 rounded-xl p-3 text-white focus:outline-none focus:border-primary transition-colors"
-                placeholder="https://twitter.com/..."
-              />
-            </div>
+          </div>
+
+          {/* Security Settings (Change Password) */}
+          <div className="glass-card p-6 rounded-2xl border border-red-500/20 bg-red-950/10">
+            <h3 className="text-xl font-bold font-outfit text-white mb-2 flex items-center gap-2">
+              <ShieldCheck className="w-5 h-5 text-red-400" />
+              Security Settings
+            </h3>
+            <p className="text-sm text-gray-400 mb-6">Update your admin panel password. You will need your current password to confirm changes.</p>
+            
+            <form onSubmit={handleChangePassword} className="space-y-4">
+              <div>
+                <label className="block text-sm font-medium text-gray-400 mb-2">Current Password</label>
+                <div className="relative">
+                  <Lock className="w-4 h-4 text-gray-500 absolute left-3 top-1/2 -translate-y-1/2" />
+                  <input
+                    type="password"
+                    name="currentPassword"
+                    value={pwdData.currentPassword}
+                    onChange={handlePwdChange}
+                    className="w-full bg-dark-800 border border-white/10 rounded-xl py-3 pl-10 pr-3 text-white focus:outline-none focus:border-red-500/50 transition-colors"
+                    placeholder="Enter current password"
+                  />
+                </div>
+              </div>
+              
+              <div>
+                <label className="block text-sm font-medium text-gray-400 mb-2">New Password</label>
+                <div className="relative">
+                  <Lock className="w-4 h-4 text-gray-500 absolute left-3 top-1/2 -translate-y-1/2" />
+                  <input
+                    type="password"
+                    name="newPassword"
+                    value={pwdData.newPassword}
+                    onChange={handlePwdChange}
+                    className="w-full bg-dark-800 border border-white/10 rounded-xl py-3 pl-10 pr-3 text-white focus:outline-none focus:border-red-500/50 transition-colors"
+                    placeholder="Minimum 6 characters"
+                  />
+                </div>
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium text-gray-400 mb-2">Confirm New Password</label>
+                <div className="relative">
+                  <Lock className="w-4 h-4 text-gray-500 absolute left-3 top-1/2 -translate-y-1/2" />
+                  <input
+                    type="password"
+                    name="confirmPassword"
+                    value={pwdData.confirmPassword}
+                    onChange={handlePwdChange}
+                    className="w-full bg-dark-800 border border-white/10 rounded-xl py-3 pl-10 pr-3 text-white focus:outline-none focus:border-red-500/50 transition-colors"
+                    placeholder="Re-enter new password"
+                  />
+                </div>
+              </div>
+
+              <button
+                type="submit"
+                disabled={isUpdatingPassword}
+                className="w-full py-3 mt-2 bg-red-500/20 hover:bg-red-500 text-red-400 hover:text-white border border-red-500/50 rounded-xl font-medium transition-all flex items-center justify-center gap-2 disabled:opacity-50"
+              >
+                {isUpdatingPassword ? <Loader2 className="w-5 h-5 animate-spin" /> : <ShieldCheck className="w-5 h-5" />}
+                Update Password
+              </button>
+            </form>
           </div>
         </div>
 
