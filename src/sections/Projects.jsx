@@ -1,7 +1,10 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Code2, ExternalLink, Monitor, Smartphone, Globe } from 'lucide-react';
 import { FaGithub } from 'react-icons/fa';
+
+import { collection, getDocs, orderBy, query } from 'firebase/firestore';
+import { db } from '../config/firebase';
 
 const categories = ['All', 'Web', 'Mobile', 'Desktop'];
 
@@ -20,66 +23,36 @@ const techColors = {
   'Android Studio': 'border-green-400/50 text-green-300',
 };
 
-const projects = [
-  {
-    title: 'Voxara E-Commerce',
-    category: 'Mobile',
-    icon: <Smartphone className="w-5 h-5" />,
-    description: 'Full-featured Android ecommerce application with product catalogue, cart, wishlist, profile, and secure authentication.',
-    tech: ['Android Studio', 'Java', 'Firebase', 'Firestore'],
-    github: '#',
-    demo: '#'
-  },
-  {
-    title: 'Voxara Admin Panel',
-    category: 'Web',
-    icon: <Globe className="w-5 h-5" />,
-    description: 'Admin dashboard for managing products, customers, orders, categories and brands with real-time database updates.',
-    tech: ['React.js', 'Tailwind CSS', 'Node.js', 'Firebase'],
-    github: '#',
-    demo: '#'
-  },
-  {
-    title: 'Mobile Planet',
-    category: 'Web',
-    icon: <Globe className="w-5 h-5" />,
-    description: 'Complete ecommerce platform with product filtering, cart, checkout, admin panel and sales management.',
-    tech: ['PHP', 'MySQL', 'JavaScript', 'Bootstrap'],
-    github: '#',
-    demo: '#'
-  },
-  {
-    title: 'ChitChat Messenger',
-    category: 'Mobile',
-    icon: <Smartphone className="w-5 h-5" />,
-    description: 'Cross-platform messaging application with secure authentication and real-time communication protocols.',
-    tech: ['React Native', 'TypeScript', 'Java', 'MySQL'],
-    github: '#',
-    demo: '#'
-  },
-  {
-    title: 'Lavanya Fashions POS',
-    category: 'Desktop',
-    icon: <Monitor className="w-5 h-5" />,
-    description: 'Enterprise POS system managing customers, inventory, employees, invoices and complex sales reports.',
-    tech: ['Java', 'Java Swing', 'MySQL', 'JasperReports'],
-    github: '#',
-    demo: '#'
-  },
-  {
-    title: 'GymPos Management',
-    category: 'Desktop',
-    icon: <Monitor className="w-5 h-5" />,
-    description: 'Team-built gym management desktop application handling members, payments, and administrative reports.',
-    tech: ['Java', 'Java Swing', 'MySQL', 'JasperReports'],
-    github: '#',
-    demo: '#'
-  }
-];
-
 const Projects = () => {
+  const [projects, setProjects] = useState([]);
+  const [loading, setLoading] = useState(true);
   const [activeFilter, setActiveFilter] = useState('All');
   const [hoveredIndex, setHoveredIndex] = useState(null);
+
+  useEffect(() => {
+    const fetchProjects = async () => {
+      try {
+        const q = query(collection(db, 'projects'), orderBy('createdAt', 'desc'));
+        const querySnapshot = await getDocs(q);
+        const data = querySnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+        
+        // Add dynamic icon based on category for the UI
+        const mappedData = data.map(p => {
+          let icon = <Globe className="w-5 h-5" />;
+          if (p.category === 'Mobile') icon = <Smartphone className="w-5 h-5" />;
+          if (p.category === 'Desktop') icon = <Monitor className="w-5 h-5" />;
+          return { ...p, icon };
+        });
+
+        setProjects(mappedData);
+      } catch (error) {
+        console.error("Error fetching projects", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchProjects();
+  }, []);
 
   const filteredProjects = projects.filter(p => activeFilter === 'All' || p.category === activeFilter);
 

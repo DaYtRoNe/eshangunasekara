@@ -55,9 +55,33 @@ const typewriterTexts = [
   "Hey Eshan, let's collaborate!"
 ];
 
+import { doc, getDoc } from 'firebase/firestore';
+import { db } from '../config/firebase';
+
 const Contact = () => {
   const [copiedField, setCopiedField] = useState(null);
   const [formState, setFormState] = useState('idle'); // idle, submitting, success
+  
+  const [settings, setSettings] = useState({
+    linkedinUrl: "https://www.linkedin.com/in/eshan-gunasekara-83b9761b2",
+    whatsappUrl: "https://wa.me/94778157227",
+    githubUrl: "https://github.com/DaYtRoNe"
+  });
+
+  useEffect(() => {
+    const fetchSettings = async () => {
+      try {
+        const docSnap = await getDoc(doc(db, 'settings', 'global'));
+        if (docSnap.exists()) {
+          const data = docSnap.data();
+          setSettings(prev => ({ ...prev, ...data }));
+        }
+      } catch (error) {
+        console.error("Error fetching settings:", error);
+      }
+    };
+    fetchSettings();
+  }, []);
   
   const [placeholder, setPlaceholder] = useState("");
   const [textIndex, setTextIndex] = useState(0);
@@ -213,13 +237,16 @@ const Contact = () => {
               className="flex items-center gap-4 mt-2 glass px-6 py-4 rounded-3xl border border-white/10 w-max shadow-xl"
             >
               {[
-                { icon: <FaLinkedin className="w-5 h-5" />, href: "https://www.linkedin.com/in/eshan-gunasekara-83b9761b2" },
-                { icon: <FaWhatsapp className="w-5 h-5" />, href: "https://wa.me/94778157227" },
-                { icon: <FaGithub className="w-5 h-5" />, href: "https://github.com/DaYtRoNe" }
-              ].map((link, idx) => (
+                { icon: <FaLinkedin className="w-5 h-5" />, href: settings.linkedinUrl },
+                { icon: <FaWhatsapp className="w-5 h-5" />, href: settings.whatsappUrl },
+                { icon: <FaGithub className="w-5 h-5" />, href: settings.githubUrl },
+                ...(settings.twitterUrl ? [{ icon: <FaTwitter className="w-5 h-5" />, href: settings.twitterUrl }] : [])
+              ].filter(link => link.href).map((link, idx) => (
                 <motion.a
                   key={idx}
                   href={link.href}
+                  target="_blank"
+                  rel="noreferrer"
                   whileHover={{ scale: 1.25, y: -4 }}
                   whileTap={{ scale: 0.9 }}
                   className="p-3 bg-dark-900 border border-white/10 rounded-full hover:border-primary/50 text-gray-400 hover:text-white transition-colors shadow-lg cursor-hover hover:shadow-[0_0_15px_rgba(170,59,255,0.3)]"

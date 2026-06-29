@@ -43,14 +43,39 @@ const SettingsManager = () => {
     setFormData(prev => ({ ...prev, [name]: value }));
   };
 
+  const [isDragging, setIsDragging] = useState(false);
+
   const handleFileChange = (e) => {
-    if (e.target.files[0]) {
+    if (e.target.files && e.target.files[0]) {
       const file = e.target.files[0];
       if (file.type === 'application/pdf') {
         setCvFile(file);
       } else {
         toast.error('Please upload a PDF file');
         e.target.value = null;
+      }
+    }
+  };
+
+  const handleDragOver = (e) => {
+    e.preventDefault();
+    setIsDragging(true);
+  };
+
+  const handleDragLeave = (e) => {
+    e.preventDefault();
+    setIsDragging(false);
+  };
+
+  const handleDrop = (e) => {
+    e.preventDefault();
+    setIsDragging(false);
+    if (e.dataTransfer.files && e.dataTransfer.files[0]) {
+      const file = e.dataTransfer.files[0];
+      if (file.type === 'application/pdf') {
+        setCvFile(file);
+      } else {
+        toast.error('Please drop a PDF file');
       }
     }
   };
@@ -146,7 +171,12 @@ const SettingsManager = () => {
               Curriculum Vitae (CV)
             </h3>
             <div className="space-y-4">
-              <div className="border-2 border-dashed border-white/10 rounded-xl p-6 text-center hover:border-primary/50 transition-colors cursor-pointer relative">
+              <div 
+                className={`border-2 border-dashed rounded-xl p-6 text-center transition-colors relative ${isDragging ? 'border-primary bg-primary/10' : 'border-white/10 hover:border-primary/50'}`}
+                onDragOver={handleDragOver}
+                onDragLeave={handleDragLeave}
+                onDrop={handleDrop}
+              >
                 <input 
                   type="file" 
                   accept="application/pdf"
@@ -154,11 +184,21 @@ const SettingsManager = () => {
                   className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
                 />
                 <div className="flex flex-col items-center gap-2">
-                  <Upload className="w-8 h-8 text-gray-500" />
-                  <p className="text-sm text-gray-300 font-medium">
-                    {cvFile ? cvFile.name : "Click or drag to upload new PDF"}
-                  </p>
-                  <p className="text-xs text-gray-500">Only PDF files are supported</p>
+                  {cvFile ? (
+                    <>
+                      <FileText className="w-8 h-8 text-green-400" />
+                      <p className="text-sm text-green-400 font-medium">Selected: {cvFile.name}</p>
+                      <p className="text-xs text-gray-400">Click to change</p>
+                    </>
+                  ) : (
+                    <>
+                      <Upload className={`w-8 h-8 ${isDragging ? 'text-primary' : 'text-gray-500'}`} />
+                      <p className="text-sm text-gray-300 font-medium">
+                        Click or drag to upload new PDF
+                      </p>
+                      <p className="text-xs text-gray-500">Only PDF files are supported</p>
+                    </>
+                  )}
                 </div>
               </div>
               

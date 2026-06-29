@@ -1,11 +1,35 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { Sparkles, Code2, Database, Smartphone, Globe } from 'lucide-react';
 
-const coreSkills = ['React.js', 'Node.js', 'TypeScript', 'Java', 'Next.js', 'Express'];
-const marqueeSkills = ['HTML5', 'CSS3', 'Tailwind CSS', 'Bootstrap', 'JavaScript', 'PHP', 'Git', 'GitHub', 'Firebase', 'Vercel', 'Netlify', 'VS Code', 'IntelliJ IDEA'];
+import { collection, getDocs, orderBy, query } from 'firebase/firestore';
+import { db } from '../config/firebase';
 
 const Skills = () => {
+  const [skills, setSkills] = useState([]);
+  const [loading, setLoading] = useState(true);
+
+  // For the marquee, we combine all items from all categories
+  const allSkills = skills.flatMap(cat => cat.items || []);
+  const coreStack = skills.find(s => s.title.toLowerCase().includes('core'))?.items || [];
+  const dbStack = skills.find(s => s.title.toLowerCase().includes('data'))?.items || [];
+  const mobileStack = skills.find(s => s.title.toLowerCase().includes('mobile'))?.items || [];
+
+  useEffect(() => {
+    const fetchSkills = async () => {
+      try {
+        const q = query(collection(db, 'skills'), orderBy('createdAt', 'asc'));
+        const querySnapshot = await getDocs(q);
+        const data = querySnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+        setSkills(data);
+      } catch (error) {
+        console.error("Error fetching skills", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchSkills();
+  }, []);
   return (
     <section id="skills" className="py-24 relative bg-dark-900/50 overflow-hidden">
       {/* Background Glow */}
@@ -63,8 +87,8 @@ const Skills = () => {
               <div className="absolute inset-[-80px] border border-white/5 rounded-full dashed-spin pointer-events-none" style={{ borderStyle: 'dashed' }} />
 
               {/* Orbiting Elements */}
-              {coreSkills.map((skill, index) => {
-                const angle = (index / coreSkills.length) * 360;
+              {coreStack.map((skill, index) => {
+                const angle = (index / Math.max(1, coreStack.length)) * 360;
                 const radius = index % 2 === 0 ? 110 : 160;
                 const duration = index % 2 === 0 ? 15 : 22;
                 const direction = index % 2 === 0 ? 1 : -1;
@@ -107,7 +131,7 @@ const Skills = () => {
               <h3 className="text-lg font-bold text-white">Database</h3>
             </div>
             <div className="flex flex-wrap gap-2 mt-auto relative z-10">
-              {['MySQL', 'MongoDB', 'Firebase Firestore'].map((s) => (
+              {dbStack.map((s) => (
                 <span key={s} className="px-3 py-1.5 bg-white/5 border border-white/10 rounded-lg text-sm text-gray-300 hover:text-white hover:bg-blue-500/20 hover:border-blue-500/50 transition-colors shadow-sm">{s}</span>
               ))}
             </div>
@@ -129,7 +153,7 @@ const Skills = () => {
               <h3 className="text-lg font-bold text-white">Mobile</h3>
             </div>
             <div className="flex flex-wrap gap-2 mt-auto relative z-10">
-              {['Android Java', 'Kotlin', 'React Native'].map((s) => (
+              {mobileStack.map((s) => (
                 <span key={s} className="px-3 py-1.5 bg-white/5 border border-white/10 rounded-lg text-sm text-gray-300 hover:text-white hover:bg-purple-500/20 hover:border-purple-500/50 transition-colors shadow-sm">{s}</span>
               ))}
             </div>
@@ -154,7 +178,7 @@ const Skills = () => {
                 transition={{ duration: 30, repeat: Infinity, ease: "linear" }}
               >
                 {/* Double the array for seamless loop */}
-                {[...marqueeSkills, ...marqueeSkills].map((skill, idx) => (
+                {[...allSkills, ...allSkills].map((skill, idx) => (
                   <div 
                     key={idx} 
                     className="px-6 py-3 bg-dark-800 border border-white/10 rounded-xl text-gray-300 font-medium hover:text-white hover:border-primary/50 transition-colors cursor-hover shadow-[0_5px_15px_rgba(0,0,0,0.3)] hover:-translate-y-1 transform duration-300"

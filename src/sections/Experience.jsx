@@ -1,34 +1,9 @@
-import React, { useRef } from 'react';
+import React, { useRef, useState, useEffect } from 'react';
 import { motion, useScroll, useTransform } from 'framer-motion';
 import { Briefcase, Building2, GraduationCap } from 'lucide-react';
 
-const experiences = [
-  {
-    role: 'IT & Digital Operations Assistant',
-    company: 'RIO Online School',
-    period: '2024 - 2026',
-    icon: <Building2 className="w-5 h-5 text-gray-400" />,
-    responsibilities: [
-      'Managed official Facebook page and digital presence',
-      'Published content and handled customer inquiries',
-      'Managed Zoom classes and supported digital learning operations',
-      'Solved technical issues for staff and students',
-      'Improved workflow efficiency across digital platforms'
-    ]
-  },
-  {
-    role: 'BSc (Hons) Software Engineering',
-    company: 'UK University (Currently Studying)',
-    period: '2023 - Present',
-    icon: <GraduationCap className="w-5 h-5 text-gray-400" />,
-    responsibilities: [
-      'Studying core software engineering principles and modern architectures',
-      'Developing full-stack web applications for academic projects',
-      'Learning advanced algorithms and data structures',
-      'Collaborating on team-based agile software development'
-    ]
-  }
-];
+import { collection, getDocs, orderBy, query } from 'firebase/firestore';
+import { db } from '../config/firebase';
 
 const ExperienceItem = ({ exp, isLast }) => {
   const ref = useRef(null);
@@ -140,6 +115,54 @@ const ExperienceItem = ({ exp, isLast }) => {
 };
 
 const Experience = () => {
+  const [experiences, setExperiences] = useState([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const [expSnap, eduSnap] = await Promise.all([
+          getDocs(query(collection(db, 'experience'), orderBy('createdAt', 'desc'))),
+          getDocs(query(collection(db, 'education'), orderBy('createdAt', 'desc')))
+        ]);
+
+        const expData = expSnap.docs.map(doc => {
+          const data = doc.data();
+          return {
+            role: data.role,
+            company: data.company,
+            period: data.duration,
+            responsibilities: data.description || [],
+            icon: <Building2 className="w-5 h-5 text-gray-400" />,
+            createdAt: data.createdAt
+          };
+        });
+
+        const eduData = eduSnap.docs.map(doc => {
+          const data = doc.data();
+          return {
+            role: data.degree,
+            company: data.university,
+            period: data.duration,
+            responsibilities: data.details ? data.details.split('\\n').filter(d => d.trim() !== '') : [],
+            icon: <GraduationCap className="w-5 h-5 text-gray-400" />,
+            createdAt: data.createdAt
+          };
+        });
+
+        // Combine and sort by createdAt descending
+        const combined = [...expData, ...eduData].sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+        
+        setExperiences(combined);
+      } catch (error) {
+        console.error("Error fetching experience data:", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchData();
+  }, []);
+
   return (
     <section id="experience" className="py-24 relative bg-dark-900/50">
       <div className="container mx-auto px-6 md:px-12 relative z-10">
@@ -158,13 +181,17 @@ const Experience = () => {
         </motion.div>
 
         <div className="max-w-5xl mx-auto">
-          {experiences.map((exp, idx) => (
-            <ExperienceItem 
-              key={idx} 
-              exp={exp} 
-              isLast={idx === experiences.length - 1} 
-            />
-          ))}
+          {loading ? (
+             <div className="text-center text-gray-400">Loading experience...</div>
+          ) : (
+            experiences.map((exp, idx) => (
+              <ExperienceItem 
+                key={idx} 
+                exp={exp} 
+                isLast={idx === experiences.length - 1} 
+              />
+            ))
+          )}
         </div>
       </div>
     </section>

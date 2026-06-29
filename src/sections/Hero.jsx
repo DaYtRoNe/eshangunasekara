@@ -29,15 +29,39 @@ const FloatingNode = ({ icon, text, delay, className, mouseX, mouseY, depth }) =
   );
 };
 
+import { doc, getDoc } from 'firebase/firestore';
+import { db } from '../config/firebase';
+
 const Hero = () => {
   const mouseX = useMotionValue(0);
   const mouseY = useMotionValue(0);
+  
+  const [settings, setSettings] = React.useState({
+    aboutMe: "I build scalable applications with clean architecture and highly modern user experiences.",
+    cvUrl: "#",
+    linkedinUrl: "https://www.linkedin.com/in/eshan-gunasekara-83b9761b2",
+    whatsappUrl: "https://wa.me/94778157227",
+    githubUrl: "https://github.com/DaYtRoNe"
+  });
 
   // Smooth out the mouse values for buttery parallax
   const smoothMouseX = useSpring(mouseX, { damping: 50, stiffness: 400 });
   const smoothMouseY = useSpring(mouseY, { damping: 50, stiffness: 400 });
 
   useEffect(() => {
+    const fetchSettings = async () => {
+      try {
+        const docSnap = await getDoc(doc(db, 'settings', 'global'));
+        if (docSnap.exists()) {
+          const data = docSnap.data();
+          setSettings(prev => ({ ...prev, ...data }));
+        }
+      } catch (error) {
+        console.error("Error fetching settings:", error);
+      }
+    };
+    fetchSettings();
+
     const handleMouseMove = (e) => {
       mouseX.set(e.clientX);
       mouseY.set(e.clientY);
@@ -126,7 +150,7 @@ const Hero = () => {
               </span>
             </h1>
             <p className="text-lg md:text-2xl text-gray-400 font-medium max-w-2xl mx-auto leading-relaxed px-4">
-              I build scalable applications with clean architecture and highly modern user experiences.
+              {settings.aboutMe}
             </p>
           </motion.div>
         </div>
@@ -152,8 +176,9 @@ const Hero = () => {
             </Link>
 
             <a
-              href="/Eshan_Gunasekara_CV.pdf"
-              download="Eshan_Gunasekara_CV.pdf"
+              href={settings.cvUrl || '#'}
+              target="_blank"
+              rel="noreferrer"
               className="group relative px-8 py-4 glass text-white rounded-2xl font-bold text-lg border border-white/10 hover:border-primary/50 transition-all flex items-center gap-3 shadow-lg cursor-hover hover:-translate-y-1 hover:shadow-[0_0_20px_rgba(170,59,255,0.2)]"
             >
               <Download className="w-5 h-5 text-gray-300 group-hover:text-white group-hover:-translate-y-1 transition-all" />
@@ -162,15 +187,21 @@ const Hero = () => {
           </div>
 
           <div className="flex items-center gap-5">
-            <a href="https://www.linkedin.com/in/eshan-gunasekara-83b9761b2" target="_blank" rel="noreferrer" className="p-5 glass rounded-2xl border border-white/10 hover:border-primary/50 text-gray-400 hover:text-white transition-all hover:-translate-y-1 hover:shadow-[0_0_20px_rgba(170,59,255,0.3)] cursor-hover group">
-              <FaLinkedin className="w-7 h-7 group-hover:scale-110 transition-transform" />
-            </a>
-            <a href="https://wa.me/94778157227" target="_blank" rel="noreferrer" className="p-5 glass rounded-2xl border border-white/10 hover:border-primary/50 text-gray-400 hover:text-white transition-all hover:-translate-y-1 hover:shadow-[0_0_20px_rgba(170,59,255,0.3)] cursor-hover group">
-              <FaWhatsapp className="w-7 h-7 group-hover:scale-110 transition-transform" />
-            </a>
-            <a href="https://github.com/DaYtRoNe" target="_blank" rel="noreferrer" className="p-5 glass rounded-2xl border border-white/10 hover:border-primary/50 text-gray-400 hover:text-white transition-all hover:-translate-y-1 hover:shadow-[0_0_20px_rgba(170,59,255,0.3)] cursor-hover group">
-              <FaGithub className="w-7 h-7 group-hover:scale-110 transition-transform" />
-            </a>
+            {settings.linkedinUrl && (
+              <a href={settings.linkedinUrl} target="_blank" rel="noreferrer" className="p-5 glass rounded-2xl border border-white/10 hover:border-primary/50 text-gray-400 hover:text-white transition-all hover:-translate-y-1 hover:shadow-[0_0_20px_rgba(170,59,255,0.3)] cursor-hover group">
+                <FaLinkedin className="w-7 h-7 group-hover:scale-110 transition-transform" />
+              </a>
+            )}
+            {settings.whatsappUrl && (
+              <a href={settings.whatsappUrl} target="_blank" rel="noreferrer" className="p-5 glass rounded-2xl border border-white/10 hover:border-primary/50 text-gray-400 hover:text-white transition-all hover:-translate-y-1 hover:shadow-[0_0_20px_rgba(170,59,255,0.3)] cursor-hover group">
+                <FaWhatsapp className="w-7 h-7 group-hover:scale-110 transition-transform" />
+              </a>
+            )}
+            {settings.githubUrl && (
+              <a href={settings.githubUrl} target="_blank" rel="noreferrer" className="p-5 glass rounded-2xl border border-white/10 hover:border-primary/50 text-gray-400 hover:text-white transition-all hover:-translate-y-1 hover:shadow-[0_0_20px_rgba(170,59,255,0.3)] cursor-hover group">
+                <FaGithub className="w-7 h-7 group-hover:scale-110 transition-transform" />
+              </a>
+            )}
           </div>
         </motion.div>
 
