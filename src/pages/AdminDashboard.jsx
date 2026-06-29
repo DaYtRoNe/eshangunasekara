@@ -1,10 +1,10 @@
 import React, { useState } from 'react';
 import AdminSidebar from '../components/admin/AdminSidebar';
-// import SettingsManager from '../components/admin/SettingsManager';
-// import ProjectsManager from '../components/admin/ProjectsManager';
-// import ExperienceManager from '../components/admin/ExperienceManager';
-// import EducationManager from '../components/admin/EducationManager';
-// import SkillsManager from '../components/admin/SkillsManager';
+import SettingsManager from '../components/admin/SettingsManager';
+import ProjectsManager from '../components/admin/ProjectsManager';
+import ExperienceManager from '../components/admin/ExperienceManager';
+import EducationManager from '../components/admin/EducationManager';
+import SkillsManager from '../components/admin/SkillsManager';
 
 const AdminDashboard = () => {
   const [activeTab, setActiveTab] = useState('settings');
@@ -12,15 +12,15 @@ const AdminDashboard = () => {
   const renderContent = () => {
     switch (activeTab) {
       case 'settings':
-        return <div className="text-gray-400">Settings Manager (Coming Soon)</div>;
+        return <SettingsManager />;
       case 'projects':
-        return <div className="text-gray-400">Projects Manager (Coming Soon)</div>;
+        return <ProjectsManager />;
       case 'experience':
-        return <div className="text-gray-400">Experience Manager (Coming Soon)</div>;
+        return <ExperienceManager />;
       case 'education':
-        return <div className="text-gray-400">Education Manager (Coming Soon)</div>;
+        return <EducationManager />;
       case 'skills':
-        return <div className="text-gray-400">Skills Manager (Coming Soon)</div>;
+        return <SkillsManager />;
       default:
         return null;
     }
