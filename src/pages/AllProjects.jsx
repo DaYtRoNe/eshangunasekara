@@ -10,12 +10,27 @@ import CustomCursor from '../components/CustomCursor';
 
 const categories = ['All', 'Web', 'Mobile', 'Desktop'];
 
+const techColors = {
+  'React.js': 'border-blue-500/50 text-blue-400',
+  'React': 'border-blue-500/50 text-blue-400',
+  'React Native': 'border-blue-400/50 text-blue-300',
+  'Node.js': 'border-green-500/50 text-green-400',
+  'Firebase': 'border-yellow-500/50 text-yellow-400',
+  'Tailwind CSS': 'border-cyan-500/50 text-cyan-400',
+  'Java': 'border-orange-500/50 text-orange-400',
+  'PHP': 'border-indigo-400/50 text-indigo-300',
+  'MySQL': 'border-blue-300/50 text-blue-200',
+  'TypeScript': 'border-blue-600/50 text-blue-500',
+  'Android Studio': 'border-green-400/50 text-green-300',
+};
+
 const AllProjects = () => {
   const [projects, setProjects] = useState([]);
   const [loading, setLoading] = useState(true);
   const [activeFilter, setActiveFilter] = useState('All');
   const [searchQuery, setSearchQuery] = useState('');
   const [sortOrder, setSortOrder] = useState('newest');
+  const [hoveredIndex, setHoveredIndex] = useState(null);
 
   useEffect(() => {
     window.scrollTo(0, 0);
@@ -149,59 +164,76 @@ const AllProjects = () => {
           </div>
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-            <AnimatePresence>
-              {filteredProjects.map((project, index) => (
-                <motion.div
-                  layout
-                  initial={{ opacity: 0, scale: 0.9 }}
-                  animate={{ opacity: 1, scale: 1 }}
-                  exit={{ opacity: 0, scale: 0.9 }}
-                  transition={{ duration: 0.3 }}
-                  key={project.id}
-                  className="group relative glass rounded-3xl p-6 border border-white/10 cursor-hover overflow-hidden hover:border-primary/50 transition-colors"
-                >
-                  {/* Top Bar (Icon + Links) */}
-                  <div className="flex justify-between items-start mb-6">
-                    <div className="p-3 bg-dark-800/80 rounded-2xl text-primary border border-white/5 group-hover:scale-110 transition-transform">
-                      {project.icon}
-                    </div>
-                    <div className="flex gap-2">
-                      {project.githubUrl && (
-                        <a href={project.githubUrl} target="_blank" rel="noreferrer" className="p-2 bg-dark-800/80 text-gray-400 hover:text-white rounded-full transition-colors border border-white/5 hover:border-white/20">
-                          <FaGithub className="w-4 h-4" />
-                        </a>
-                      )}
-                      {project.liveUrl && (
-                        <a href={project.liveUrl} target="_blank" rel="noreferrer" className="p-2 bg-dark-800/80 text-gray-400 hover:text-primary rounded-full transition-colors border border-white/5 hover:border-primary/30">
-                          <ExternalLink className="w-4 h-4" />
-                        </a>
-                      )}
-                    </div>
-                  </div>
+            <AnimatePresence mode="popLayout">
+              {filteredProjects.map((project, idx) => {
+                const isHovered = hoveredIndex === project.title;
+                const isAnotherHovered = hoveredIndex !== null && hoveredIndex !== project.title;
 
-                  {/* Content */}
-                  <h3 className="text-xl font-bold text-white mb-3 font-outfit leading-tight group-hover:text-primary transition-colors">
-                    {project.title}
-                  </h3>
-                  <p className="text-gray-400 text-sm leading-relaxed mb-6 line-clamp-3">
-                    {project.description}
-                  </p>
+                return (
+                  <motion.div
+                    layout
+                    key={project.title}
+                    initial={{ opacity: 0, scale: 0.8 }}
+                    animate={{ 
+                      opacity: isAnotherHovered ? 0.3 : 1, 
+                      scale: isAnotherHovered ? 0.96 : 1,
+                      filter: isAnotherHovered ? "blur(3px)" : "blur(0px)",
+                    }}
+                    exit={{ opacity: 0, scale: 0.8, filter: "blur(10px)" }}
+                    transition={{ duration: 0.4 }}
+                    onMouseEnter={() => setHoveredIndex(project.title)}
+                    onMouseLeave={() => setHoveredIndex(null)}
+                    className={`glass-card p-8 flex flex-col h-full relative cursor-hover transition-all duration-300 ${
+                      isHovered ? 'shadow-[0_0_30px_rgba(170,59,255,0.15)] border-primary/40 -translate-y-2' : 'border-white/10 hover:border-white/20'
+                    }`}
+                  >
+                    {/* Subtle Grid Background for Tech feel */}
+                    <div className="absolute inset-0 opacity-[0.02] pointer-events-none rounded-2xl" style={{ backgroundImage: 'linear-gradient(rgba(255,255,255,1) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,1) 1px, transparent 1px)', backgroundSize: '15px 15px' }} />
+                    
+                    {/* Header */}
+                    <div className="flex justify-between items-start mb-6 relative z-10">
+                      <div className={`p-3 bg-dark-800 border rounded-xl shadow-lg transition-colors duration-300 ${isHovered ? 'border-primary/50 text-primary shadow-[0_0_15px_rgba(170,59,255,0.3)]' : 'border-white/10 text-gray-400'}`}>
+                        {project.icon}
+                      </div>
+                      <div className="flex gap-3">
+                        <a href={project.githubUrl} className="p-2 bg-white/5 border border-white/10 rounded-lg text-gray-400 hover:text-white hover:border-primary/50 transition-colors cursor-hover hover:shadow-[0_0_10px_rgba(170,59,255,0.2)]">
+                          <FaGithub className="w-5 h-5" />
+                        </a>
+                        <a href={project.liveUrl} className="p-2 bg-white/5 border border-white/10 rounded-lg text-gray-400 hover:text-white hover:border-primary/50 transition-colors cursor-hover hover:shadow-[0_0_10px_rgba(170,59,255,0.2)]">
+                          <ExternalLink className="w-5 h-5" />
+                        </a>
+                      </div>
+                    </div>
 
-                  {/* Tech Stack */}
-                  <div className="flex flex-wrap gap-2 mt-auto">
-                    {project.tech?.slice(0, 4).map((tech, i) => (
-                      <span key={i} className="px-2.5 py-1 text-xs font-medium rounded-md bg-dark-800 border border-white/5 text-gray-300">
-                        {tech}
-                      </span>
-                    ))}
-                    {project.tech?.length > 4 && (
-                      <span className="px-2.5 py-1 text-xs font-medium rounded-md bg-dark-800 border border-white/5 text-gray-500">
-                        +{project.tech.length - 4}
-                      </span>
-                    )}
-                  </div>
-                </motion.div>
-              ))}
+                    {/* Body */}
+                    <div className="relative z-10 flex-1">
+                      <h3 className={`text-2xl font-bold mb-3 transition-colors ${isHovered ? 'text-primary' : 'text-white'}`}>
+                        {project.title}
+                      </h3>
+                      <p className="text-gray-400 text-sm leading-relaxed mb-8">
+                        {project.description}
+                      </p>
+                    </div>
+
+                    {/* Tech Stack Cyber-Badges */}
+                    <div className="relative z-10 mt-auto pt-6 border-t border-white/5">
+                      <div className="flex flex-wrap gap-2">
+                        {project.tech.map((tech, tIdx) => {
+                          const colorClass = techColors[tech] || 'border-primary/30 text-primary/80';
+                          return (
+                            <span 
+                              key={tIdx} 
+                              className={`text-[11px] font-mono tracking-wider px-2.5 py-1 bg-dark-950/80 rounded-md border ${colorClass} shadow-sm backdrop-blur-md`}
+                            >
+                              {tech}
+                            </span>
+                          );
+                        })}
+                      </div>
+                    </div>
+                  </motion.div>
+                );
+              })}
             </AnimatePresence>
           </div>
         )}
