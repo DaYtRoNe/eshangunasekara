@@ -131,7 +131,7 @@ const Experience = () => {
           return {
             role: data.role,
             company: data.company,
-            period: data.duration,
+            period: data.period || data.duration || '',
             responsibilities: data.description || [],
             icon: <Building2 className="w-5 h-5 text-gray-400" />,
             createdAt: data.createdAt
@@ -142,8 +142,8 @@ const Experience = () => {
           const data = doc.data();
           return {
             role: data.degree,
-            company: data.university,
-            period: data.duration,
+            company: data.institution || data.university || '',
+            period: data.period || data.duration || '',
             responsibilities: data.details ? data.details.split('\\n').filter(d => d.trim() !== '') : [],
             icon: <GraduationCap className="w-5 h-5 text-gray-400" />,
             createdAt: data.createdAt
