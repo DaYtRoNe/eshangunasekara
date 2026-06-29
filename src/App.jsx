@@ -23,6 +23,10 @@ const Portfolio = () => {
   const [loading, setLoading] = useState(true);
   const [globalSettings, setGlobalSettings] = useState(null);
 
+  const handleLoadingComplete = React.useCallback(() => {
+    setLoading(false);
+  }, []);
+
   useEffect(() => {
     // Fetch global settings while the loading screen is playing
     const fetchSettings = async () => {
@@ -43,7 +47,7 @@ const Portfolio = () => {
       <AnimatedBackground />
       <AnimatePresence mode="wait">
         {loading ? (
-          <LoadingScreen key="loading" onComplete={() => setLoading(false)} />
+          <LoadingScreen key="loading" onComplete={handleLoadingComplete} />
         ) : (
           <motion.div
             key="content"
