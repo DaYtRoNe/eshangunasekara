@@ -54,7 +54,7 @@ const Portfolio = () => {
             <Navbar />
             <main>
               <Hero globalSettings={globalSettings} />
-              <About />
+              <About globalSettings={globalSettings} />
               <Skills />
               <Experience />
               <Projects />

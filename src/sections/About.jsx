@@ -33,7 +33,7 @@ const TypewriterText = ({ text, delay = 0 }) => {
   );
 };
 
-const About = () => {
+const About = ({ globalSettings }) => {
   // 3D Card Physics
   const cardRef = useRef(null);
   const mouseX = useMotionValue(0);
@@ -55,6 +55,8 @@ const About = () => {
     mouseX.set(0);
     mouseY.set(0);
   };
+
+  const hasAvatar = globalSettings && globalSettings.avatarUrl && globalSettings.avatarUrl.trim() !== '';
 
   return (
     <section id="about" className="py-24 relative overflow-hidden bg-dark-800/30">
@@ -115,12 +117,16 @@ const About = () => {
                   </div>
                 </div>
 
-                {/* Avatar Placeholder */}
+                {/* Avatar Placeholder / Image */}
                 <div 
-                  className="w-24 h-24 md:w-32 md:h-32 rounded-full border-2 border-primary/50 mb-6 relative z-10 overflow-hidden bg-dark-800 flex items-center justify-center shadow-[0_0_30px_rgba(170,59,255,0.3)] transition-transform duration-300 group-hover:scale-105"
+                  className={`w-24 h-24 md:w-32 md:h-32 rounded-full border-2 ${hasAvatar ? 'border-primary' : 'border-primary/50'} mb-6 relative z-10 overflow-hidden bg-dark-800 flex items-center justify-center shadow-[0_0_30px_rgba(170,59,255,0.3)] transition-transform duration-300 group-hover:scale-105`}
                   style={{ transform: "translateZ(40px)" }}
                 >
-                  <img src="https://placehold.co/400x400/1a1a1a/aa3bff?text=Avatar" alt="Eshan" className="w-full h-full object-cover pointer-events-none" />
+                  {hasAvatar ? (
+                    <img src={globalSettings.avatarUrl} alt="Eshan" className="w-full h-full object-cover pointer-events-none" />
+                  ) : (
+                    <span className="font-outfit font-bold text-primary text-xl">Avatar</span>
+                  )}
                 </div>
 
                 <div className="text-center relative z-10" style={{ transform: "translateZ(30px)" }}>

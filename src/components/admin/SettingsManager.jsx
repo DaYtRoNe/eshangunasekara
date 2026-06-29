@@ -9,11 +9,15 @@ const SettingsManager = () => {
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [cvFile, setCvFile] = useState(null);
+  const [avatarFile, setAvatarFile] = useState(null);
+  const [isDragging, setIsDragging] = useState(false);
+  const [isAvatarDragging, setIsAvatarDragging] = useState(false);
   
   const [formData, setFormData] = useState({
     aboutMe: '',
     cvProfile: '',
     cvUrl: '',
+    avatarUrl: '',
     linkedinUrl: '',
     githubUrl: '',
     whatsappUrl: '',
@@ -44,8 +48,7 @@ const SettingsManager = () => {
     setFormData(prev => ({ ...prev, [name]: value }));
   };
 
-  const [isDragging, setIsDragging] = useState(false);
-
+  // CV Upload Handlers
   const handleFileChange = (e) => {
     if (e.target.files && e.target.files[0]) {
       const file = e.target.files[0];
@@ -81,6 +84,39 @@ const SettingsManager = () => {
     }
   };
 
+  // Avatar Upload Handlers
+  const handleAvatarChange = (e) => {
+    if (e.target.files && e.target.files[0]) {
+      const file = e.target.files[0];
+      if (file.type.startsWith('image/')) {
+        setAvatarFile(file);
+      } else {
+        toast.error('Please upload an image file');
+        e.target.value = null;
+      }
+    }
+  };
+
+  const handleAvatarDrop = (e) => {
+    e.preventDefault();
+    setIsAvatarDragging(false);
+    if (e.dataTransfer.files && e.dataTransfer.files[0]) {
+      const file = e.dataTransfer.files[0];
+      if (file.type.startsWith('image/')) {
+        setAvatarFile(file);
+      } else {
+        toast.error('Please drop an image file');
+      }
+    }
+  };
+
+  const handleRemoveAvatar = () => {
+    if (window.confirm("Are you sure you want to remove your profile photo?")) {
+      setFormData(prev => ({ ...prev, avatarUrl: '' }));
+      setAvatarFile(null);
+    }
+  };
+
   const handleSave = async (e) => {
     e.preventDefault();
     setSaving(true);
@@ -88,8 +124,9 @@ const SettingsManager = () => {
 
     try {
       let finalCvUrl = formData.cvUrl;
+      let finalAvatarUrl = formData.avatarUrl;
 
-      // If a new CV was selected, upload it first
+      // Upload new CV if selected
       if (cvFile) {
         toast.loading('Uploading CV...', { id: toastId });
         const storageRef = ref(storage, `cv/${cvFile.name}`);
@@ -97,14 +134,23 @@ const SettingsManager = () => {
         finalCvUrl = await getDownloadURL(storageRef);
       }
 
-      const updatedData = { ...formData, cvUrl: finalCvUrl };
+      // Upload new Avatar if selected
+      if (avatarFile) {
+        toast.loading('Uploading Avatar...', { id: toastId });
+        const avatarRef = ref(storage, `avatars/${avatarFile.name}`);
+        await uploadBytes(avatarRef, avatarFile);
+        finalAvatarUrl = await getDownloadURL(avatarRef);
+      }
+
+      const updatedData = { ...formData, cvUrl: finalCvUrl, avatarUrl: finalAvatarUrl };
 
       // Save to Firestore
       toast.loading('Updating database...', { id: toastId });
       await setDoc(doc(db, 'settings', 'global'), updatedData);
       
       setFormData(updatedData);
-      setCvFile(null); // Clear file input state
+      setCvFile(null);
+      setAvatarFile(null);
       
       toast.success('Settings saved successfully!', { id: toastId });
     } catch (error) {
@@ -173,6 +219,54 @@ const SettingsManager = () => {
                   placeholder="A dedicated software engineer with a passion for..."
                 />
               </div>
+            </div>
+          </div>
+
+          {/* Avatar Upload Section */}
+          <div className="glass-card p-6 rounded-2xl border border-white/5">
+            <h3 className="text-xl font-bold font-outfit text-white mb-4 flex items-center gap-2">
+              <User className="w-5 h-5 text-primary" />
+              Profile Avatar
+            </h3>
+            <div className="space-y-4">
+              <div 
+                className={`border-2 border-dashed rounded-xl p-6 text-center transition-colors relative ${isAvatarDragging ? 'border-primary bg-primary/10' : 'border-white/10 hover:border-primary/50'}`}
+                onDragOver={(e) => { e.preventDefault(); setIsAvatarDragging(true); }}
+                onDragLeave={() => setIsAvatarDragging(false)}
+                onDrop={handleAvatarDrop}
+              >
+                <input 
+                  type="file" 
+                  accept="image/*"
+                  onChange={handleAvatarChange}
+                  className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
+                />
+                <div className="flex flex-col items-center gap-2">
+                  {avatarFile ? (
+                    <>
+                      <User className="w-8 h-8 text-green-400" />
+                      <p className="text-sm text-green-400 font-medium">Selected: {avatarFile.name}</p>
+                      <p className="text-xs text-gray-400">Click to change</p>
+                    </>
+                  ) : (
+                    <>
+                      <Upload className={`w-8 h-8 ${isAvatarDragging ? 'text-primary' : 'text-gray-500'}`} />
+                      <p className="text-sm text-gray-300 font-medium">
+                        Click or drag to upload new Photo
+                      </p>
+                      <p className="text-xs text-gray-500">Only Image files are supported</p>
+                    </>
+                  )}
+                </div>
+              </div>
+              
+              {formData.avatarUrl && !avatarFile && (
+                <div className="flex items-center gap-2 text-sm text-gray-400 bg-dark-800 p-3 rounded-lg border border-white/5">
+                  <img src={formData.avatarUrl} alt="Avatar" className="w-8 h-8 rounded-full object-cover border border-white/10" />
+                  <span>Current photo is active</span>
+                  <button onClick={handleRemoveAvatar} className="ml-auto text-red-400 hover:text-red-300 hover:underline">Remove</button>
+                </div>
+              )}
             </div>
           </div>
 
