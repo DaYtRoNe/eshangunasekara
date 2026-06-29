@@ -19,7 +19,7 @@ export const generateCV = async () => {
       experience: experienceSnap.docs.map(doc => doc.data()),
       education: educationSnap.docs.map(doc => doc.data()),
       skills: skillsSnap.docs.map(doc => doc.data()),
-      projects: projectsSnap.docs.map(doc => doc.data())
+      projects: projectsSnap.docs.map(doc => doc.data()).filter(p => p.isPublished !== false)
     };
 
     // Generate PDF blob

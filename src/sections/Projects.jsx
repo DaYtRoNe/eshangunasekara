@@ -34,7 +34,9 @@ const Projects = () => {
       try {
         const q = query(collection(db, 'projects'), orderBy('createdAt', 'desc'));
         const querySnapshot = await getDocs(q);
-        const data = querySnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+        const data = querySnapshot.docs
+          .map(doc => ({ id: doc.id, ...doc.data() }))
+          .filter(p => p.isPublished !== false);
         
         // Add dynamic icon based on category for the UI
         const mappedData = data.map(p => {

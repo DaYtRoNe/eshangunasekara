@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { db, storage } from '../../config/firebase';
 import { collection, getDocs, addDoc, updateDoc, deleteDoc, doc, query, orderBy } from 'firebase/firestore';
 import { ref, uploadBytes, getDownloadURL } from 'firebase/storage';
-import { Plus, Trash2, Pencil, Image as ImageIcon, Loader2, ExternalLink, X } from 'lucide-react';
+import { Plus, Trash2, Pencil, Image as ImageIcon, Loader2, ExternalLink, X, Eye, EyeOff } from 'lucide-react';
 import { FaGithub } from 'react-icons/fa';
 import toast from 'react-hot-toast';
 
@@ -20,7 +20,8 @@ const ProjectsManager = () => {
     techStack: '',
     githubUrl: '',
     liveUrl: '',
-    imageUrl: ''
+    imageUrl: '',
+    isPublished: true
   });
 
   useEffect(() => {
@@ -63,7 +64,8 @@ const ProjectsManager = () => {
       techStack: project.tech ? project.tech.join(', ') : '',
       githubUrl: project.githubUrl || '',
       liveUrl: project.liveUrl || '',
-      imageUrl: project.imageUrl || ''
+      imageUrl: project.imageUrl || '',
+      isPublished: project.isPublished !== false
     });
     setImageFile(null);
     window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -71,7 +73,7 @@ const ProjectsManager = () => {
   
   const cancelEdit = () => {
     setEditingId(null);
-    setFormData({ title: '', description: '', cvDescription: '', techStack: '', githubUrl: '', liveUrl: '', imageUrl: '' });
+    setFormData({ title: '', description: '', cvDescription: '', techStack: '', githubUrl: '', liveUrl: '', imageUrl: '', isPublished: true });
     setImageFile(null);
   };
 
@@ -102,6 +104,7 @@ const ProjectsManager = () => {
         githubUrl: formData.githubUrl,
         liveUrl: formData.liveUrl,
         imageUrl: imageUrl,
+        isPublished: formData.isPublished !== false,
       };
 
       if (editingId) {
@@ -133,6 +136,18 @@ const ProjectsManager = () => {
       toast.success('Deleted successfully', { id: toastId });
     } catch (error) {
       toast.error('Failed to delete', { id: toastId });
+    }
+  };
+
+  const handleTogglePublish = async (project) => {
+    const newStatus = project.isPublished === false ? true : false;
+    const toastId = toast.loading(newStatus ? 'Publishing...' : 'Moving to Draft...');
+    try {
+      await updateDoc(doc(db, 'projects', project.id), { isPublished: newStatus });
+      setProjects(prev => prev.map(p => p.id === project.id ? { ...p, isPublished: newStatus } : p));
+      toast.success(newStatus ? 'Project published!' : 'Project moved to draft', { id: toastId });
+    } catch (error) {
+      toast.error('Failed to update status', { id: toastId });
     }
   };
 
@@ -234,11 +249,24 @@ const ProjectsManager = () => {
               {projects.map(project => (
                 <div key={project.id} className="glass-card rounded-2xl border border-white/5 overflow-hidden group">
                   <div className="h-40 overflow-hidden relative">
-                    <img src={project.imageUrl} alt={project.title} className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110" />
+                    <img src={project.imageUrl} alt={project.title} className={`w-full h-full object-cover transition-transform duration-500 group-hover:scale-110 ${project.isPublished === false ? 'grayscale opacity-50' : ''}`} />
                     <div className="absolute inset-0 bg-gradient-to-t from-dark-900 to-transparent" />
+                    
+                    {project.isPublished === false && (
+                      <div className="absolute top-3 left-3 bg-red-500/80 text-white text-xs font-bold px-2 py-1 rounded-md backdrop-blur-md">
+                        DRAFT
+                      </div>
+                    )}
                     
                     {/* Action Buttons */}
                     <div className="absolute top-3 right-3 flex gap-2">
+                      <button 
+                        onClick={() => handleTogglePublish(project)}
+                        className={`p-2 rounded-lg text-white opacity-0 group-hover:opacity-100 transition-all backdrop-blur-md ${project.isPublished === false ? 'bg-green-500/80 hover:bg-green-600' : 'bg-gray-500/80 hover:bg-gray-600'}`}
+                        title={project.isPublished === false ? "Publish Project" : "Move to Draft"}
+                      >
+                        {project.isPublished === false ? <Eye className="w-4 h-4" /> : <EyeOff className="w-4 h-4" />}
+                      </button>
                       <button 
                         onClick={() => handleEditClick(project)}
                         className="p-2 bg-blue-500/20 text-blue-400 rounded-lg hover:bg-blue-500 hover:text-white transition-colors opacity-0 group-hover:opacity-100 backdrop-blur-md"
