@@ -13,12 +13,15 @@ import Projects from './sections/Projects';
 import Contact from './sections/Contact';
 import Footer from './components/Footer';
 
-function App() {
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import AdminApp from './pages/AdminApp';
+import NotFound from './pages/NotFound';
+
+const Portfolio = () => {
   const [loading, setLoading] = useState(true);
 
   return (
-    <div className="min-h-screen bg-dark-900 text-gray-300 font-inter selection:bg-primary/30 selection:text-white overflow-hidden relative">
-      <CustomCursor />
+    <div className="min-h-screen bg-dark-900 text-gray-300 font-inter overflow-hidden relative">
       <AnimatedBackground />
       <AnimatePresence mode="wait">
         {loading ? (
@@ -46,6 +49,21 @@ function App() {
         )}
       </AnimatePresence>
     </div>
+  );
+};
+
+function App() {
+  return (
+    <Router>
+      <div className="selection:bg-primary/30 selection:text-white">
+        <CustomCursor />
+        <Routes>
+          <Route path="/" element={<Portfolio />} />
+          <Route path="/admin/*" element={<AdminApp />} />
+          <Route path="*" element={<NotFound />} />
+        </Routes>
+      </div>
+    </Router>
   );
 }
 
