@@ -21,6 +21,7 @@ const ProjectsManager = () => {
     githubUrl: '',
     liveUrl: '',
     imageUrl: '',
+    category: 'Web',
     isPublished: true
   });
 
@@ -65,6 +66,7 @@ const ProjectsManager = () => {
       githubUrl: project.githubUrl || '',
       liveUrl: project.liveUrl || '',
       imageUrl: project.imageUrl || '',
+      category: project.category || 'Web',
       isPublished: project.isPublished !== false
     });
     setImageFile(null);
@@ -73,7 +75,7 @@ const ProjectsManager = () => {
   
   const cancelEdit = () => {
     setEditingId(null);
-    setFormData({ title: '', description: '', cvDescription: '', techStack: '', githubUrl: '', liveUrl: '', imageUrl: '', isPublished: true });
+    setFormData({ title: '', description: '', cvDescription: '', techStack: '', githubUrl: '', liveUrl: '', imageUrl: '', category: 'Web', isPublished: true });
     setImageFile(null);
   };
 
@@ -104,6 +106,7 @@ const ProjectsManager = () => {
         githubUrl: formData.githubUrl,
         liveUrl: formData.liveUrl,
         imageUrl: imageUrl,
+        category: formData.category,
         isPublished: formData.isPublished !== false,
       };
 
@@ -186,6 +189,15 @@ const ProjectsManager = () => {
               <div>
                 <label className="block text-sm font-medium text-gray-400 mb-1">Short Description (For Portfolio UI)*</label>
                 <textarea name="description" required rows="3" value={formData.description} onChange={handleChange} className="w-full bg-dark-800 border border-white/10 rounded-xl p-3 text-white focus:outline-none focus:border-primary resize-none" />
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium text-gray-400 mb-1">Category*</label>
+                <select name="category" value={formData.category} onChange={handleChange} className="w-full bg-dark-800 border border-white/10 rounded-xl p-3 text-white focus:outline-none focus:border-primary">
+                  <option value="Web">Web</option>
+                  <option value="Mobile">Mobile</option>
+                  <option value="Desktop">Desktop</option>
+                </select>
               </div>
 
               <div>

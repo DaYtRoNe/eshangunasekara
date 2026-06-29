@@ -40,10 +40,11 @@ const Projects = () => {
         
         // Add dynamic icon based on category for the UI
         const mappedData = data.map(p => {
+          const category = p.category || 'Web';
           let icon = <Globe className="w-5 h-5" />;
-          if (p.category === 'Mobile') icon = <Smartphone className="w-5 h-5" />;
-          if (p.category === 'Desktop') icon = <Monitor className="w-5 h-5" />;
-          return { ...p, icon };
+          if (category === 'Mobile') icon = <Smartphone className="w-5 h-5" />;
+          if (category === 'Desktop') icon = <Monitor className="w-5 h-5" />;
+          return { ...p, category, icon };
         });
 
         setProjects(mappedData);
