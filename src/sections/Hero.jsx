@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react';
 import { motion, useMotionValue, useSpring, useTransform } from 'framer-motion';
-import { ArrowRight, Code2, Cpu, MapPin, Sparkles } from 'lucide-react';
+import { ArrowRight, Code2, Cpu, MapPin, Sparkles, Download } from 'lucide-react';
 import { FaGithub, FaLinkedin, FaWhatsapp } from 'react-icons/fa';
 import { Link } from 'react-scroll';
 
@@ -138,17 +138,28 @@ const Hero = () => {
           transition={{ duration: 0.8, delay: 0.4 }}
           className="mt-12 flex flex-col sm:flex-row items-center gap-6"
         >
-          <Link
-            to="projects"
-            smooth={true}
-            duration={500}
-            className="group relative px-10 py-5 bg-primary text-white rounded-2xl font-bold text-lg md:text-xl transition-all flex items-center gap-4 cursor-pointer overflow-hidden shadow-[0_0_20px_rgba(170,59,255,0.4)] hover:shadow-[0_0_35px_rgba(170,59,255,0.6)] cursor-hover hover:-translate-y-1"
-          >
-            <div className="absolute inset-0 w-1/2 bg-gradient-to-r from-transparent via-white/30 to-transparent -translate-x-[150%] group-hover:animate-shimmer" />
-            <Sparkles className="w-6 h-6 group-hover:rotate-12 transition-transform" />
-            <span className="relative z-10">Explore Universe</span>
-            <ArrowRight className="w-6 h-6 group-hover:translate-x-1.5 transition-transform relative z-10" />
-          </Link>
+          <div className="flex flex-col sm:flex-row items-center gap-4">
+            <Link
+              to="projects"
+              smooth={true}
+              duration={500}
+              className="group relative px-8 py-4 bg-primary text-white rounded-2xl font-bold text-lg transition-all flex items-center gap-3 cursor-pointer overflow-hidden shadow-[0_0_20px_rgba(170,59,255,0.4)] hover:shadow-[0_0_35px_rgba(170,59,255,0.6)] cursor-hover hover:-translate-y-1"
+            >
+              <div className="absolute inset-0 w-1/2 bg-gradient-to-r from-transparent via-white/30 to-transparent -translate-x-[150%] group-hover:animate-shimmer" />
+              <Sparkles className="w-5 h-5 group-hover:rotate-12 transition-transform" />
+              <span className="relative z-10">Explore Universe</span>
+              <ArrowRight className="w-5 h-5 group-hover:translate-x-1.5 transition-transform relative z-10" />
+            </Link>
+
+            <a
+              href="/Eshan_Gunasekara_CV.pdf"
+              download="Eshan_Gunasekara_CV.pdf"
+              className="group relative px-8 py-4 glass text-white rounded-2xl font-bold text-lg border border-white/10 hover:border-primary/50 transition-all flex items-center gap-3 shadow-lg cursor-hover hover:-translate-y-1 hover:shadow-[0_0_20px_rgba(170,59,255,0.2)]"
+            >
+              <Download className="w-5 h-5 text-gray-300 group-hover:text-white group-hover:-translate-y-1 transition-all" />
+              <span className="text-gray-200 group-hover:text-white transition-colors">Download CV</span>
+            </a>
+          </div>
 
           <div className="flex items-center gap-5">
             <a href="https://www.linkedin.com/in/eshan-gunasekara-83b9761b2" target="_blank" rel="noreferrer" className="p-5 glass rounded-2xl border border-white/10 hover:border-primary/50 text-gray-400 hover:text-white transition-all hover:-translate-y-1 hover:shadow-[0_0_20px_rgba(170,59,255,0.3)] cursor-hover group">
