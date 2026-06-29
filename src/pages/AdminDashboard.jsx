@@ -27,11 +27,11 @@ const AdminDashboard = () => {
   };
 
   return (
-    <div className="min-h-screen bg-dark-900 text-white flex">
+    <div className="min-h-screen bg-dark-900 text-white flex flex-col md:flex-row">
       <AdminSidebar activeTab={activeTab} setActiveTab={setActiveTab} />
 
-      <div className="flex-1 p-8 md:p-12 overflow-y-auto h-screen">
-        <div className="max-w-5xl mx-auto">
+      <div className="flex-1 p-6 md:p-12 overflow-y-auto h-screen">
+        <div className="max-w-5xl mx-auto pb-20">
           {renderContent()}
         </div>
       </div>
