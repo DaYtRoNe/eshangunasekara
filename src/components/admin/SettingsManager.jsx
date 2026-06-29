@@ -1,17 +1,26 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { db, storage } from '../../config/firebase';
 import { doc, getDoc, setDoc } from 'firebase/firestore';
 import { ref, uploadBytes, getDownloadURL } from 'firebase/storage';
-import { Save, Upload, Loader2, Link as LinkIcon, FileText, User } from 'lucide-react';
+import { Save, Upload, Loader2, Link as LinkIcon, FileText, User, X, Check } from 'lucide-react';
 import toast from 'react-hot-toast';
+import Cropper from 'react-easy-crop';
+import getCroppedImg from '../../utils/cropImage';
 
 const SettingsManager = () => {
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [cvFile, setCvFile] = useState(null);
   const [avatarFile, setAvatarFile] = useState(null);
+  const [avatarPreview, setAvatarPreview] = useState('');
   const [isDragging, setIsDragging] = useState(false);
-  const [isAvatarDragging, setIsAvatarDragging] = useState(false);
+  
+  // Cropper States
+  const [imageToCrop, setImageToCrop] = useState(null);
+  const [isCropping, setIsCropping] = useState(false);
+  const [crop, setCrop] = useState({ x: 0, y: 0 });
+  const [zoom, setZoom] = useState(1);
+  const [croppedAreaPixels, setCroppedAreaPixels] = useState(null);
   
   const [formData, setFormData] = useState({
     aboutMe: '',
@@ -84,36 +93,73 @@ const SettingsManager = () => {
     }
   };
 
+  const [isAvatarDragging, setIsAvatarDragging] = useState(false);
+
   // Avatar Upload Handlers
-  const handleAvatarChange = (e) => {
+  const readImage = (file) => {
+    return new Promise((resolve) => {
+      const reader = new FileReader();
+      reader.addEventListener('load', () => resolve(reader.result));
+      reader.readAsDataURL(file);
+    });
+  };
+
+  const handleAvatarChange = async (e) => {
     if (e.target.files && e.target.files[0]) {
       const file = e.target.files[0];
       if (file.type.startsWith('image/')) {
-        setAvatarFile(file);
+        const imageDataUrl = await readImage(file);
+        setImageToCrop(imageDataUrl);
+        setIsCropping(true);
       } else {
         toast.error('Please upload an image file');
-        e.target.value = null;
       }
+      e.target.value = null;
     }
   };
 
-  const handleAvatarDrop = (e) => {
+  const handleAvatarDrop = async (e) => {
     e.preventDefault();
     setIsAvatarDragging(false);
     if (e.dataTransfer.files && e.dataTransfer.files[0]) {
       const file = e.dataTransfer.files[0];
       if (file.type.startsWith('image/')) {
-        setAvatarFile(file);
+        const imageDataUrl = await readImage(file);
+        setImageToCrop(imageDataUrl);
+        setIsCropping(true);
       } else {
         toast.error('Please drop an image file');
       }
     }
   };
 
+  const onCropComplete = useCallback((croppedArea, croppedAreaPixels) => {
+    setCroppedAreaPixels(croppedAreaPixels);
+  }, []);
+
+  const generateCroppedImage = async () => {
+    try {
+      const croppedImageFile = await getCroppedImg(imageToCrop, croppedAreaPixels);
+      setAvatarFile(croppedImageFile);
+      setAvatarPreview(URL.createObjectURL(croppedImageFile));
+      setIsCropping(false);
+      setImageToCrop(null);
+    } catch (e) {
+      console.error(e);
+      toast.error('Failed to crop image');
+    }
+  };
+
+  const cancelCrop = () => {
+    setIsCropping(false);
+    setImageToCrop(null);
+  };
+
   const handleRemoveAvatar = () => {
     if (window.confirm("Are you sure you want to remove your profile photo?")) {
       setFormData(prev => ({ ...prev, avatarUrl: '' }));
       setAvatarFile(null);
+      setAvatarPreview('');
     }
   };
 
@@ -260,11 +306,18 @@ const SettingsManager = () => {
                 </div>
               </div>
               
-              {formData.avatarUrl && !avatarFile && (
-                <div className="flex items-center gap-2 text-sm text-gray-400 bg-dark-800 p-3 rounded-lg border border-white/5">
-                  <img src={formData.avatarUrl} alt="Avatar" className="w-8 h-8 rounded-full object-cover border border-white/10" />
-                  <span>Current photo is active</span>
-                  <button onClick={handleRemoveAvatar} className="ml-auto text-red-400 hover:text-red-300 hover:underline">Remove</button>
+              {(avatarPreview || formData.avatarUrl) && !isCropping && (
+                <div className="flex items-center gap-4 text-sm text-gray-400 bg-dark-800 p-4 rounded-xl border border-white/5 shadow-inner">
+                  <div className="w-12 h-12 rounded-full border-2 border-primary/50 overflow-hidden flex-shrink-0">
+                    <img src={avatarPreview || formData.avatarUrl} alt="Avatar Preview" className="w-full h-full object-cover" />
+                  </div>
+                  <div className="flex-grow">
+                    <span className="block text-white font-medium mb-1">Current photo is active</span>
+                    {avatarFile && <span className="block text-xs text-green-400">Ready to save: {avatarFile.name}</span>}
+                  </div>
+                  <button onClick={handleRemoveAvatar} className="px-3 py-1.5 bg-red-500/10 text-red-400 hover:bg-red-500 hover:text-white rounded-lg transition-colors">
+                    Remove
+                  </button>
                 </div>
               )}
             </div>
@@ -374,6 +427,71 @@ const SettingsManager = () => {
         </div>
 
       </div>
+
+      {/* Crop Modal */}
+      {isCropping && (
+        <div className="fixed inset-0 z-[100] flex items-center justify-center bg-dark-900/90 backdrop-blur-sm p-4">
+          <div className="bg-dark-800 w-full max-w-2xl rounded-2xl shadow-2xl border border-white/10 overflow-hidden flex flex-col">
+            
+            {/* Modal Header */}
+            <div className="flex justify-between items-center p-4 border-b border-white/10">
+              <h3 className="text-xl font-bold text-white">Crop Profile Photo</h3>
+              <button onClick={cancelCrop} className="text-gray-400 hover:text-white transition-colors">
+                <X className="w-6 h-6" />
+              </button>
+            </div>
+
+            {/* Cropper Container */}
+            <div className="relative w-full h-[60vh] bg-dark-900">
+              <Cropper
+                image={imageToCrop}
+                crop={crop}
+                zoom={zoom}
+                aspect={1}
+                cropShape="round"
+                showGrid={false}
+                onCropChange={setCrop}
+                onCropComplete={onCropComplete}
+                onZoomChange={setZoom}
+              />
+            </div>
+
+            {/* Modal Footer & Controls */}
+            <div className="p-6 space-y-4 border-t border-white/10 bg-dark-800">
+              <div className="flex items-center gap-4">
+                <span className="text-sm text-gray-400 font-medium w-12">Zoom</span>
+                <input
+                  type="range"
+                  value={zoom}
+                  min={1}
+                  max={3}
+                  step={0.1}
+                  aria-labelledby="Zoom"
+                  onChange={(e) => setZoom(e.target.value)}
+                  className="w-full h-2 bg-dark-900 rounded-lg appearance-none cursor-pointer accent-primary"
+                />
+              </div>
+
+              <div className="flex justify-end gap-3 pt-4">
+                <button
+                  onClick={cancelCrop}
+                  className="px-6 py-2.5 rounded-xl border border-white/10 text-gray-300 font-medium hover:bg-white/5 transition-colors"
+                >
+                  Cancel
+                </button>
+                <button
+                  onClick={generateCroppedImage}
+                  className="px-6 py-2.5 rounded-xl bg-primary text-white font-bold hover:bg-primary-dark transition-colors flex items-center gap-2 shadow-lg shadow-primary/20"
+                >
+                  <Check className="w-5 h-5" />
+                  Apply Crop
+                </button>
+              </div>
+            </div>
+
+          </div>
+        </div>
+      )}
     </div>
   );
 };
