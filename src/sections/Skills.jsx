@@ -46,7 +46,7 @@ const Skills = () => {
           <div className="inline-flex items-center justify-center p-3 glass rounded-2xl mb-4 cursor-hover">
             <Sparkles className="w-8 h-8 text-primary" />
           </div>
-          <h2 className="text-4xl md:text-5xl font-bold font-outfit mb-4 text-white">Technical Arsenal</h2>
+          <h2 className="text-4xl md:text-5xl font-bold font-outfit mb-4 text-white">Technical Skills</h2>
           <div className="w-24 h-1 bg-gradient-to-r from-primary to-transparent rounded-full mb-6" />
           <p className="text-gray-400 max-w-2xl text-lg">
             A comprehensive suite of modern technologies and tools I use to build scalable, high-performance applications.

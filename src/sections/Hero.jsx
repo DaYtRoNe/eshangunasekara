@@ -161,7 +161,7 @@ const Hero = ({ globalSettings }) => {
             >
               <div className="absolute inset-0 w-1/2 bg-gradient-to-r from-transparent via-white/30 to-transparent -translate-x-[150%] group-hover:animate-shimmer" />
               <Sparkles className="w-5 h-5 group-hover:rotate-12 transition-transform" />
-              <span className="relative z-10">Explore Universe</span>
+              <span className="relative z-10">View Projects</span>
               <ArrowRight className="w-5 h-5 group-hover:translate-x-1.5 transition-transform relative z-10" />
             </Link>
 

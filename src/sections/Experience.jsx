@@ -176,7 +176,7 @@ const Experience = () => {
           <div className="inline-flex items-center justify-center p-3 glass rounded-2xl mb-4 cursor-hover">
             <Briefcase className="w-8 h-8 text-primary" />
           </div>
-          <h2 className="text-4xl md:text-5xl font-bold font-outfit mb-4 text-white">Work & Education</h2>
+          <h2 className="text-4xl md:text-5xl font-bold font-outfit mb-4 text-white">Professional Experience</h2>
           <div className="w-24 h-1 bg-gradient-to-r from-primary to-transparent rounded-full" />
         </motion.div>
 
