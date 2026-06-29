@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { db } from '../../config/firebase';
 import { collection, getDocs, addDoc, updateDoc, deleteDoc, doc, query, orderBy } from 'firebase/firestore';
-import { Plus, Trash2, Pencil, Loader2, Briefcase, X } from 'lucide-react';
+import { Plus, Trash2, Pencil, Loader2, Briefcase, Calendar, X } from 'lucide-react';
 import toast from 'react-hot-toast';
 
 const ExperienceManager = () => {
@@ -10,11 +10,12 @@ const ExperienceManager = () => {
   const [adding, setAdding] = useState(false);
   const [editingId, setEditingId] = useState(null);
 
-  const [newExperience, setNewExperience] = useState({
+  const [formData, setFormData] = useState({
     role: '',
     company: '',
     period: '',
-    description: '' // Will be split by newlines for bullets
+    description: '',
+    cvDescription: ''
   });
 
   useEffect(() => {
@@ -31,7 +32,7 @@ const ExperienceManager = () => {
       }));
       setExperiences(data);
     } catch (error) {
-      toast.error('Failed to load experiences');
+      toast.error('Failed to load experience');
     } finally {
       setLoading(false);
     }
@@ -39,48 +40,43 @@ const ExperienceManager = () => {
 
   const handleChange = (e) => {
     const { name, value } = e.target;
-    setNewExperience(prev => ({ ...prev, [name]: value }));
+    setFormData(prev => ({ ...prev, [name]: value }));
   };
 
   const handleEditClick = (exp) => {
     setEditingId(exp.id);
-    setNewExperience({
+    setFormData({
       role: exp.role || '',
       company: exp.company || '',
       period: exp.period || '',
-      description: exp.description ? exp.description.join('\n') : ''
+      description: Array.isArray(exp.description) ? exp.description.join('\n') : exp.description || '',
+      cvDescription: exp.cvDescription || ''
     });
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
   
   const cancelEdit = () => {
     setEditingId(null);
-    setNewExperience({ role: '', company: '', period: '', description: '' });
+    setFormData({ role: '', company: '', period: '', description: '', cvDescription: '' });
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    if (!newExperience.role || !newExperience.company || !newExperience.period) {
-      toast.error('Please fill required fields');
-      return;
-    }
-
     setAdding(true);
     const toastId = toast.loading(editingId ? 'Updating experience...' : 'Adding experience...');
 
     try {
-      const descArray = newExperience.description.split('\n').map(d => d.trim()).filter(d => d !== '');
-
       const expData = {
-        role: newExperience.role,
-        company: newExperience.company,
-        period: newExperience.period,
-        description: descArray,
+        role: formData.role,
+        company: formData.company,
+        period: formData.period,
+        description: formData.description.split('\n').map(d => d.trim()).filter(Boolean),
+        cvDescription: formData.cvDescription
       };
 
       if (editingId) {
         await updateDoc(doc(db, 'experience', editingId), expData);
-        setExperiences(prev => prev.map(exp => exp.id === editingId ? { ...exp, ...expData } : exp));
+        setExperiences(prev => prev.map(e => e.id === editingId ? { ...e, ...expData } : e));
         toast.success('Experience updated successfully!', { id: toastId });
       } else {
         expData.createdAt = new Date().toISOString();
@@ -91,7 +87,6 @@ const ExperienceManager = () => {
 
       cancelEdit();
     } catch (error) {
-      console.error(error);
       toast.error(editingId ? 'Failed to update experience' : 'Failed to add experience', { id: toastId });
     } finally {
       setAdding(false);
@@ -104,8 +99,8 @@ const ExperienceManager = () => {
     const toastId = toast.loading('Deleting...');
     try {
       await deleteDoc(doc(db, 'experience', id));
-      setExperiences(prev => prev.filter(p => p.id !== id));
-      toast.success('Experience deleted', { id: toastId });
+      setExperiences(prev => prev.filter(e => e.id !== id));
+      toast.success('Deleted successfully', { id: toastId });
     } catch (error) {
       toast.error('Failed to delete', { id: toastId });
     }
@@ -113,18 +108,21 @@ const ExperienceManager = () => {
 
   return (
     <div className="animate-in fade-in slide-in-from-bottom-4 duration-500">
-      <div className="mb-8">
-        <h2 className="text-3xl font-bold font-outfit text-white">Experience Manager</h2>
-        <p className="text-gray-400 mt-1">Manage your professional journey and work history.</p>
+      <div className="mb-8 flex flex-col md:flex-row md:items-center justify-between gap-4">
+        <div>
+          <h2 className="text-3xl font-bold font-outfit text-white">Experience Manager</h2>
+          <p className="text-gray-400 mt-1">Manage your work history and professional roles.</p>
+        </div>
       </div>
 
       <div className="grid grid-cols-1 xl:grid-cols-3 gap-8">
+        
         <div className="xl:col-span-1">
           <div className="glass-card p-6 rounded-2xl border border-white/5 sticky top-24">
             <div className="flex items-center justify-between mb-6">
               <h3 className="text-xl font-bold font-outfit text-white flex items-center gap-2">
                 {editingId ? <Pencil className="w-5 h-5 text-primary" /> : <Plus className="w-5 h-5 text-primary" />}
-                {editingId ? 'Edit Experience' : 'Add Experience'}
+                {editingId ? 'Edit Experience' : 'Add New Experience'}
               </h3>
               {editingId && (
                 <button onClick={cancelEdit} className="text-gray-400 hover:text-white" title="Cancel Edit">
@@ -136,49 +134,32 @@ const ExperienceManager = () => {
             <form onSubmit={handleSubmit} className="space-y-4">
               <div>
                 <label className="block text-sm font-medium text-gray-400 mb-1">Job Role / Title*</label>
-                <input
-                  type="text" name="role" required
-                  value={newExperience.role} onChange={handleChange}
-                  className="w-full bg-dark-800 border border-white/10 rounded-xl p-3 text-white focus:outline-none focus:border-primary"
-                  placeholder="e.g. Senior Software Engineer"
-                />
+                <input type="text" name="role" required value={formData.role} onChange={handleChange} className="w-full bg-dark-800 border border-white/10 rounded-xl p-3 text-white focus:outline-none focus:border-primary" placeholder="e.g. Senior Frontend Engineer" />
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-gray-400 mb-1">Company / Organization*</label>
-                <input
-                  type="text" name="company" required
-                  value={newExperience.company} onChange={handleChange}
-                  className="w-full bg-dark-800 border border-white/10 rounded-xl p-3 text-white focus:outline-none focus:border-primary"
-                  placeholder="e.g. Google"
-                />
+                <label className="block text-sm font-medium text-gray-400 mb-1">Company Name*</label>
+                <input type="text" name="company" required value={formData.company} onChange={handleChange} className="w-full bg-dark-800 border border-white/10 rounded-xl p-3 text-white focus:outline-none focus:border-primary" placeholder="e.g. Google" />
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-gray-400 mb-1">Time Period*</label>
-                <input
-                  type="text" name="period" required
-                  value={newExperience.period} onChange={handleChange}
-                  className="w-full bg-dark-800 border border-white/10 rounded-xl p-3 text-white focus:outline-none focus:border-primary"
-                  placeholder="e.g. Jan 2022 - Present"
-                />
+                <label className="block text-sm font-medium text-gray-400 mb-1">Period (Duration)*</label>
+                <input type="text" name="period" required value={formData.period} onChange={handleChange} className="w-full bg-dark-800 border border-white/10 rounded-xl p-3 text-white focus:outline-none focus:border-primary" placeholder="e.g. 2021 - Present" />
+              </div>
+              
+              <div>
+                <label className="block text-sm font-medium text-gray-400 mb-1">Description (For Portfolio UI - New line for bullet point)*</label>
+                <textarea name="description" required rows="4" value={formData.description} onChange={handleChange} className="w-full bg-dark-800 border border-white/10 rounded-xl p-3 text-white focus:outline-none focus:border-primary resize-none" placeholder="Developed core features...&#10;Led a team of 5..." />
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-gray-400 mb-1">Responsibilities (One per line)</label>
-                <textarea
-                  name="description" rows="5"
-                  value={newExperience.description} onChange={handleChange}
-                  className="w-full bg-dark-800 border border-white/10 rounded-xl p-3 text-white focus:outline-none focus:border-primary resize-none"
-                  placeholder="Led the frontend team...&#10;Improved performance by 40%..."
-                />
+                <label className="block text-sm font-medium text-gray-400 mb-1">Detailed CV Description (Optional)</label>
+                <textarea name="cvDescription" rows="4" value={formData.cvDescription} onChange={handleChange} placeholder="Use newline for bullet points..." className="w-full bg-dark-800 border border-white/10 rounded-xl p-3 text-white focus:outline-none focus:border-primary resize-none" />
+                <p className="text-xs text-gray-500 mt-1">If provided, this will be used in the generated CV PDF instead of the standard description.</p>
               </div>
 
-              <button
-                type="submit" disabled={adding}
-                className="w-full py-3 mt-4 bg-primary text-white rounded-xl font-bold flex items-center justify-center gap-2 hover:bg-primary-dark transition-all disabled:opacity-50"
-              >
-                {adding ? <Loader2 className="w-5 h-5 animate-spin" /> : (editingId ? <Pencil className="w-5 h-5" /> : <Plus className="w-5 h-5" />)}
+              <button type="submit" disabled={adding} className="w-full py-3 mt-4 bg-primary text-white rounded-xl font-bold flex items-center justify-center gap-2 hover:bg-primary-dark disabled:opacity-50">
+                {adding ? <Loader2 className="w-5 h-5 animate-spin" /> : (editingId ? <Pencil className="w-5 h-5" /> : <Plus className="w-5 h-5" />)} 
                 {editingId ? 'Update Experience' : 'Add Experience'}
               </button>
             </form>
@@ -186,14 +167,12 @@ const ExperienceManager = () => {
         </div>
 
         <div className="xl:col-span-2 space-y-4">
-          <h3 className="text-xl font-bold font-outfit text-white mb-6">Experience History</h3>
+          <h3 className="text-xl font-bold font-outfit text-white mb-6">Current Experience</h3>
           
           {loading ? (
             <div className="flex justify-center p-10"><Loader2 className="w-8 h-8 animate-spin text-primary" /></div>
           ) : experiences.length === 0 ? (
-            <div className="text-center p-10 glass-card rounded-2xl border border-white/5 text-gray-400">
-              No experience added yet.
-            </div>
+            <div className="text-center p-10 glass-card rounded-2xl border border-white/5 text-gray-400">No experience records found.</div>
           ) : (
             <div className="space-y-4">
               {experiences.map(exp => (
@@ -202,39 +181,43 @@ const ExperienceManager = () => {
                     <button 
                       onClick={() => handleEditClick(exp)}
                       className="p-2 bg-blue-500/20 text-blue-400 rounded-lg hover:bg-blue-500 hover:text-white transition-colors opacity-0 group-hover:opacity-100"
-                      title="Edit Experience"
+                      title="Edit"
                     >
                       <Pencil className="w-4 h-4" />
                     </button>
                     <button 
-                      onClick={() => handleDelete(exp.id)}
-                      className="p-2 bg-red-500/20 text-red-400 rounded-lg hover:bg-red-500 hover:text-white transition-colors opacity-0 group-hover:opacity-100"
-                      title="Delete Experience"
+                      onClick={() => handleDelete(exp.id)} 
+                      className="p-2 bg-red-500/10 text-red-400 rounded-lg opacity-0 group-hover:opacity-100 transition-opacity hover:bg-red-500 hover:text-white"
+                      title="Delete"
                     >
                       <Trash2 className="w-4 h-4" />
                     </button>
                   </div>
-                  
-                  <div className="flex gap-4">
-                    <div className="w-12 h-12 bg-dark-800 rounded-full flex items-center justify-center shrink-0 border border-white/10">
-                      <Briefcase className="w-5 h-5 text-primary" />
+
+                  <div className="flex flex-col md:flex-row md:items-start gap-4 md:gap-6">
+                    <div className="w-12 h-12 rounded-xl bg-primary/20 border border-primary/30 flex items-center justify-center shrink-0">
+                      <Briefcase className="w-6 h-6 text-primary" />
                     </div>
-                    <div>
-                      <h4 className="text-xl font-bold text-white">{exp.role}</h4>
-                      <p className="text-primary font-medium">{exp.company}</p>
-                      <span className="inline-block mt-1 px-3 py-1 bg-white/5 rounded-full text-xs text-gray-300 border border-white/10">
-                        {exp.period}
-                      </span>
+                    
+                    <div className="flex-1">
+                      <div className="flex flex-col md:flex-row md:items-center justify-between mb-2">
+                        <h4 className="text-xl font-bold text-white">{exp.role}</h4>
+                        <div className="flex items-center gap-2 text-sm text-primary font-medium bg-primary/10 px-3 py-1 rounded-full w-fit mt-2 md:mt-0">
+                          <Calendar className="w-4 h-4" />
+                          {exp.period}
+                        </div>
+                      </div>
                       
-                      {exp.description && exp.description.length > 0 && (
-                        <ul className="mt-4 space-y-2">
-                          {exp.description.map((item, i) => (
-                            <li key={i} className="text-gray-400 text-sm flex gap-2">
-                              <span className="text-primary mt-1">•</span> {item}
-                            </li>
-                          ))}
-                        </ul>
-                      )}
+                      <h5 className="text-lg text-gray-300 font-medium mb-4">{exp.company}</h5>
+                      
+                      <ul className="space-y-2">
+                        {Array.isArray(exp.description) && exp.description.map((desc, i) => (
+                          <li key={i} className="text-sm text-gray-400 flex gap-2">
+                            <span className="text-primary mt-1">•</span>
+                            <span>{desc}</span>
+                          </li>
+                        ))}
+                      </ul>
                     </div>
                   </div>
                 </div>

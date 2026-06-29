@@ -7,9 +7,10 @@ This portfolio is designed to stand out. It moves away from standard static temp
 ## ✨ Key Features
 
 - **Holographic Nexus Hero**: A cinematic, center-focused hero section with massive animated gradient typography and floating 3D "Glass Nodes".
+- **Auto CV Generator (PDF)**: Automatically generates an ATS-friendly, beautifully formatted PDF Curriculum Vitae on the fly directly from your Firebase data using `@react-pdf/renderer`.
 - **Glass Terminal & 3D ID Card**: A highly creative "About Me" section featuring a rotating 3D holographic ID card and a frosted glass macOS-style terminal.
-- **Dynamic Content & Admin Panel**: A secure, authenticated `/admin` dashboard that allows the owner to Add, Edit, and Delete Projects, Experience, Education, and Skills in real-time.
-- **Firebase Backend Integration**: Fully integrated with Firebase Firestore for database management, Firebase Storage for CV uploads, and Firebase Auth for secure admin access (including password resets).
+- **Dynamic Content & Admin Panel**: A secure, authenticated `/admin` dashboard that allows the owner to Add, Edit, and Delete Projects, Experience, Education, and Skills in real-time. Includes specific fields to customize text for the Auto CV separately from the Portfolio UI.
+- **Firebase Backend Integration**: Fully integrated with Firebase Firestore for database management, Firebase Storage for asset/image uploads, and Firebase Auth for secure admin access (including password resets).
 - **Interactive Contact Hub**: Features a spinning 3D Globe, direct email/WhatsApp integrations, and a Floating Social Media Dock.
 - **Premium Aesthetics**: Fully responsive layout utilizing glassmorphism, glowing accents, premium typography, and smooth scroll transitions.
 

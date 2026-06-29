@@ -1,8 +1,10 @@
-import React, { useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import { motion, useMotionValue, useSpring, useTransform } from 'framer-motion';
-import { ArrowRight, Code2, Cpu, MapPin, Sparkles, Download } from 'lucide-react';
+import { ArrowRight, Code2, Cpu, MapPin, Sparkles, Download, Loader2 } from 'lucide-react';
 import { FaGithub, FaLinkedin, FaWhatsapp } from 'react-icons/fa';
 import { Link } from 'react-scroll';
+import toast from 'react-hot-toast';
+import { generateCV } from '../utils/generateCV';
 
 const FloatingNode = ({ icon, text, delay, className, mouseX, mouseY, depth }) => {
   // Parallax effect based on mouse movement
@@ -32,36 +34,24 @@ const FloatingNode = ({ icon, text, delay, className, mouseX, mouseY, depth }) =
 import { doc, getDoc } from 'firebase/firestore';
 import { db } from '../config/firebase';
 
-const Hero = () => {
+const Hero = ({ globalSettings }) => {
   const mouseX = useMotionValue(0);
   const mouseY = useMotionValue(0);
+  const [isGeneratingCV, setIsGeneratingCV] = useState(false);
   
-  const [settings, setSettings] = React.useState({
+  // Use globalSettings directly or fallback to empty strings to avoid FOUC
+  const settings = globalSettings || {
     aboutMe: "I build scalable applications with clean architecture and highly modern user experiences.",
-    cvUrl: "#",
-    linkedinUrl: "https://www.linkedin.com/in/eshan-gunasekara-83b9761b2",
-    whatsappUrl: "https://wa.me/94778157227",
-    githubUrl: "https://github.com/DaYtRoNe"
-  });
+    linkedinUrl: "",
+    whatsappUrl: "",
+    githubUrl: ""
+  };
 
   // Smooth out the mouse values for buttery parallax
   const smoothMouseX = useSpring(mouseX, { damping: 50, stiffness: 400 });
   const smoothMouseY = useSpring(mouseY, { damping: 50, stiffness: 400 });
 
   useEffect(() => {
-    const fetchSettings = async () => {
-      try {
-        const docSnap = await getDoc(doc(db, 'settings', 'global'));
-        if (docSnap.exists()) {
-          const data = docSnap.data();
-          setSettings(prev => ({ ...prev, ...data }));
-        }
-      } catch (error) {
-        console.error("Error fetching settings:", error);
-      }
-    };
-    fetchSettings();
-
     const handleMouseMove = (e) => {
       mouseX.set(e.clientX);
       mouseY.set(e.clientY);
@@ -176,14 +166,13 @@ const Hero = () => {
             </Link>
 
             <button
+              disabled={isGeneratingCV}
               onClick={async (e) => {
                 e.preventDefault();
-                if (!settings.cvUrl || settings.cvUrl === '#') return;
-                
+                setIsGeneratingCV(true);
+                const toastId = toast.loading('Generating your CV on the fly...');
                 try {
-                  // Direct fetch to trigger download instead of opening in new tab
-                  const response = await fetch(settings.cvUrl);
-                  const blob = await response.blob();
+                  const blob = await generateCV();
                   const blobUrl = window.URL.createObjectURL(blob);
                   
                   const link = document.createElement('a');
@@ -193,16 +182,24 @@ const Hero = () => {
                   link.click();
                   document.body.removeChild(link);
                   window.URL.revokeObjectURL(blobUrl);
+                  toast.success('CV Generated successfully!', { id: toastId });
                 } catch (error) {
-                  // Fallback to opening in new tab if CORS blocks the fetch
-                  console.error("Direct download failed due to CORS, opening in new tab", error);
-                  window.open(settings.cvUrl, '_blank');
+                  console.error("Failed to generate CV", error);
+                  toast.error('Failed to generate CV', { id: toastId });
+                } finally {
+                  setIsGeneratingCV(false);
                 }
               }}
-              className="group relative px-8 py-4 glass text-white rounded-2xl font-bold text-lg border border-white/10 hover:border-primary/50 transition-all flex items-center gap-3 shadow-lg cursor-hover hover:-translate-y-1 hover:shadow-[0_0_20px_rgba(170,59,255,0.2)]"
+              className="group relative px-8 py-4 glass text-white rounded-2xl font-bold text-lg border border-white/10 hover:border-primary/50 transition-all flex items-center gap-3 shadow-lg cursor-hover hover:-translate-y-1 hover:shadow-[0_0_20px_rgba(170,59,255,0.2)] disabled:opacity-50 disabled:cursor-wait"
             >
-              <Download className="w-5 h-5 text-gray-300 group-hover:text-white group-hover:-translate-y-1 transition-all" />
-              <span className="text-gray-200 group-hover:text-white transition-colors">Download CV</span>
+              {isGeneratingCV ? (
+                <Loader2 className="w-5 h-5 text-primary animate-spin" />
+              ) : (
+                <Download className="w-5 h-5 text-gray-300 group-hover:text-white group-hover:-translate-y-1 transition-all" />
+              )}
+              <span className="text-gray-200 group-hover:text-white transition-colors">
+                {isGeneratingCV ? 'Generating...' : 'Download CV'}
+              </span>
             </button>
           </div>
 

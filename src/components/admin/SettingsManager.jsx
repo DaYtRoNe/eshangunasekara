@@ -12,6 +12,7 @@ const SettingsManager = () => {
   
   const [formData, setFormData] = useState({
     aboutMe: '',
+    cvProfile: '',
     cvUrl: '',
     linkedinUrl: '',
     githubUrl: '',
@@ -159,6 +160,17 @@ const SettingsManager = () => {
                   rows="4"
                   className="w-full bg-dark-800 border border-white/10 rounded-xl p-4 text-white focus:outline-none focus:border-primary transition-colors resize-none"
                   placeholder="I build scalable applications with clean architecture..."
+                />
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-gray-400 mb-2">CV Profile / Summary (For CV Only)</label>
+                <textarea
+                  name="cvProfile"
+                  value={formData.cvProfile}
+                  onChange={handleChange}
+                  rows="4"
+                  className="w-full bg-dark-800 border border-white/10 rounded-xl p-4 text-white focus:outline-none focus:border-primary transition-colors resize-none"
+                  placeholder="A dedicated software engineer with a passion for..."
                 />
               </div>
             </div>

@@ -1,5 +1,7 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { AnimatePresence, motion } from 'framer-motion';
+import { doc, getDoc } from 'firebase/firestore';
+import { db } from './config/firebase';
 import LoadingScreen from './components/LoadingScreen';
 import CustomCursor from './components/CustomCursor';
 import AnimatedBackground from './components/AnimatedBackground';
@@ -19,6 +21,22 @@ import NotFound from './pages/NotFound';
 
 const Portfolio = () => {
   const [loading, setLoading] = useState(true);
+  const [globalSettings, setGlobalSettings] = useState(null);
+
+  useEffect(() => {
+    // Fetch global settings while the loading screen is playing
+    const fetchSettings = async () => {
+      try {
+        const docSnap = await getDoc(doc(db, 'settings', 'global'));
+        if (docSnap.exists()) {
+          setGlobalSettings(docSnap.data());
+        }
+      } catch (error) {
+        console.error("Error fetching settings:", error);
+      }
+    };
+    fetchSettings();
+  }, []);
 
   return (
     <div className="min-h-screen bg-dark-900 text-gray-300 font-inter overflow-hidden relative">
@@ -36,7 +54,7 @@ const Portfolio = () => {
           >
             <Navbar />
             <main>
-              <Hero />
+              <Hero globalSettings={globalSettings} />
               <About />
               <Skills />
               <Experience />
