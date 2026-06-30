@@ -1,0 +1,6 @@
+User-agent: *
+Allow: /
+Disallow: /admin
+Disallow: /*?*
+
+Sitemap: https://eshangunasekara.vercel.app/sitemap.xml

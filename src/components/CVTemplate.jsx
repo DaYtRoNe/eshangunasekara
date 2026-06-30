@@ -160,13 +160,18 @@ const CVTemplate = ({ data }) => {
           <View style={styles.sidebar}>
             <Text style={[styles.sectionTitle, { marginTop: 0 }]}>Technical Skills</Text>
             
-            {Array.isArray(skills) && skills.map((skillGroup, idx) => (
+            {[
+              { category: 'Frontend', items: ['React.js', 'Next.js', 'Tailwind CSS', 'Framer Motion', 'JavaScript', 'TypeScript', 'HTML5', 'CSS3'] },
+              { category: 'Backend', items: ['Node.js', 'Express.js', 'Java', 'PHP', 'Python', 'REST APIs'] },
+              { category: 'Database', items: ['MySQL', 'MongoDB', 'Firebase', 'PostgreSQL'] },
+              { category: 'Other & Tools', items: ['Git', 'Docker', 'Postman', 'Figma', 'Android Studio', 'Vite'] }
+            ].map((skillGroup, idx) => (
               <View key={idx} wrap={false}>
-                <Text style={styles.skillCategory}>{skillGroup.title || skillGroup.category || 'Category'}</Text>
-                {Array.isArray(skillGroup.items) && skillGroup.items.map((item, i) => (
+                <Text style={styles.skillCategory}>{skillGroup.category}</Text>
+                {skillGroup.items.map((item, i) => (
                   <View style={styles.skillItem} key={i}>
                     <Text style={styles.bulletPoint}>■</Text>
-                    <Text>{item || ''}</Text>
+                    <Text>{item}</Text>
                   </View>
                 ))}
               </View>

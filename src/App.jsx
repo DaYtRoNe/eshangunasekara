@@ -13,6 +13,7 @@ import Experience from './sections/Experience';
 import Projects from './sections/Projects';
 import Contact from './sections/Contact';
 import Footer from './components/Footer';
+import SEO from './components/SEO';
 
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import AdminApp from './pages/AdminApp';
@@ -44,6 +45,12 @@ const Portfolio = () => {
 
   return (
     <div className="min-h-screen bg-dark-900 text-gray-300 font-inter overflow-hidden relative">
+      <SEO 
+        title="Eshan Gunasekara | Software Engineering Undergraduate & Full-Stack Developer"
+        description="Portfolio of Eshan Gunasekara, a Software Engineering Undergraduate at SLIIT specializing in Full-Stack Development and AI. Explore my projects and skills."
+        keywords="Eshan Gunasekara, eshan gunasekara, Software Engineer Sri Lanka, Full-Stack Developer, SLIIT, React Developer, Node.js"
+        url="https://eshangunasekara.vercel.app/"
+      />
       <AnimatedBackground />
       <AnimatePresence mode="wait">
         {loading ? (

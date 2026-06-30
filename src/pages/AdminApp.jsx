@@ -6,6 +6,7 @@ import { auth } from '../config/firebase';
 import AdminLogin from './AdminLogin';
 import AdminDashboard from './AdminDashboard';
 import toast, { Toaster } from 'react-hot-toast';
+import SEO from '../components/SEO';
 
 const TIMEOUT_DURATION = 15 * 60 * 1000; // 15 minutes in milliseconds
 
@@ -62,6 +63,7 @@ const ProtectedRoute = ({ children }) => {
 const AdminRoutes = () => {
   return (
     <>
+      <SEO title="Admin Login | Eshan Gunasekara" description="Private Admin Area" noindex={true} />
       <Toaster position="top-right" />
       <Routes>
         <Route path="/" element={<AdminLogin />} />

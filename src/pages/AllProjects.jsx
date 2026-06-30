@@ -7,6 +7,7 @@ import { FaGithub } from 'react-icons/fa';
 import { Link } from 'react-router-dom';
 import AnimatedBackground from '../components/AnimatedBackground';
 import CustomCursor from '../components/CustomCursor';
+import SEO from '../components/SEO';
 
 const categories = ['All', 'Web', 'Mobile', 'Desktop'];
 
@@ -77,6 +78,11 @@ const AllProjects = () => {
 
   return (
     <div className="min-h-screen bg-dark-900 text-white font-inter selection:bg-primary/30 selection:text-white relative overflow-hidden">
+      <SEO 
+        title="All Projects | Eshan Gunasekara"
+        description="Browse through the complete portfolio of Eshan Gunasekara's software engineering projects. Web apps, Mobile apps, and Desktop applications."
+        url="https://eshangunasekara.vercel.app/projects"
+      />
       <CustomCursor />
       <AnimatedBackground />
 
