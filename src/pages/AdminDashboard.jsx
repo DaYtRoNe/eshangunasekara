@@ -6,6 +6,7 @@ import ExperienceManager from '../components/admin/ExperienceManager';
 import EducationManager from '../components/admin/EducationManager';
 import SkillsManager from '../components/admin/SkillsManager';
 import MessagesManager from '../components/admin/MessagesManager';
+import CVGenerator from '../components/admin/CVGenerator';
 
 const AdminDashboard = () => {
   const [activeTab, setActiveTab] = useState('settings');
@@ -24,6 +25,8 @@ const AdminDashboard = () => {
         return <SkillsManager />;
       case 'messages':
         return <MessagesManager />;
+      case 'cvgenerator':
+        return <CVGenerator />;
       default:
         return null;
     }

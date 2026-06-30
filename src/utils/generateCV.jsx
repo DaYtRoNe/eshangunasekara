@@ -3,6 +3,16 @@ import CVTemplate from '../components/CVTemplate';
 import { collection, getDocs, doc, getDoc, query, orderBy } from 'firebase/firestore';
 import { db } from '../config/firebase';
 
+export const generateCustomCV = async (data) => {
+  try {
+    const blob = await pdf(<CVTemplate data={data} />).toBlob();
+    return blob;
+  } catch (error) {
+    console.error("Error generating custom CV:", error);
+    throw error;
+  }
+};
+
 export const generateCV = async () => {
   try {
     // Fetch all required data concurrently
@@ -22,9 +32,7 @@ export const generateCV = async () => {
       projects: projectsSnap.docs.map(doc => doc.data()).filter(p => p.isPublished !== false)
     };
 
-    // Generate PDF blob
-    const blob = await pdf(<CVTemplate data={data} />).toBlob();
-    return blob;
+    return await generateCustomCV(data);
   } catch (error) {
     console.error("Error generating CV:", error);
     throw error;

@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useAuth } from '../../context/AuthContext';
-import { LogOut, LayoutDashboard, Settings, Briefcase, GraduationCap, Code2, FolderGit2, Menu, X, Mail } from 'lucide-react';
+import { LogOut, LayoutDashboard, Settings, Briefcase, GraduationCap, Code2, FolderGit2, Menu, X, Mail, FileDown } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import toast from 'react-hot-toast';
 import { db } from '../../config/firebase';
@@ -35,6 +35,7 @@ const AdminSidebar = ({ activeTab, setActiveTab }) => {
     { id: 'experience', label: 'Experience', icon: <Briefcase className="w-5 h-5" /> },
     { id: 'education', label: 'Education', icon: <GraduationCap className="w-5 h-5" /> },
     { id: 'skills', label: 'Skills', icon: <Code2 className="w-5 h-5" /> },
+    { id: 'cvgenerator', label: 'CV Generator', icon: <FileDown className="w-5 h-5" /> },
     { id: 'messages', label: 'Inbox', icon: <Mail className="w-5 h-5" /> },
   ];
 
