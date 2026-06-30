@@ -202,10 +202,10 @@ const AllProjects = () => {
                         {project.icon}
                       </div>
                       <div className="flex gap-3">
-                        <a href={project.githubUrl} className="p-2 bg-white/5 border border-white/10 rounded-lg text-gray-400 hover:text-white hover:border-primary/50 transition-colors cursor-hover hover:shadow-[0_0_10px_rgba(170,59,255,0.2)]">
+                        <a href={project.githubUrl} target="_blank" rel="noopener noreferrer" className="p-2 bg-white/5 border border-white/10 rounded-lg text-gray-400 hover:text-white hover:border-primary/50 transition-colors cursor-hover hover:shadow-[0_0_10px_rgba(170,59,255,0.2)]">
                           <FaGithub className="w-5 h-5" />
                         </a>
-                        <a href={project.liveUrl} className="p-2 bg-white/5 border border-white/10 rounded-lg text-gray-400 hover:text-white hover:border-primary/50 transition-colors cursor-hover hover:shadow-[0_0_10px_rgba(170,59,255,0.2)]">
+                        <a href={project.liveUrl} target="_blank" rel="noopener noreferrer" className="p-2 bg-white/5 border border-white/10 rounded-lg text-gray-400 hover:text-white hover:border-primary/50 transition-colors cursor-hover hover:shadow-[0_0_10px_rgba(170,59,255,0.2)]">
                           <ExternalLink className="w-5 h-5" />
                         </a>
                       </div>
