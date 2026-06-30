@@ -133,7 +133,7 @@ const Projects = () => {
                   transition={{ duration: 0.4 }}
                   onMouseEnter={() => setHoveredIndex(project.title)}
                   onMouseLeave={() => setHoveredIndex(null)}
-                  className={`glass-card p-8 flex flex-col h-full relative cursor-hover transition-all duration-300 ${
+                  className={`glass-card p-8 flex flex-col h-full relative transition-all duration-300 ${
                     isHovered ? 'shadow-[0_0_30px_rgba(170,59,255,0.15)] border-primary/40 -translate-y-2' : 'border-white/10 hover:border-white/20'
                   }`}
                 >
@@ -145,12 +145,12 @@ const Projects = () => {
                     <div className={`p-3 bg-dark-800 border rounded-xl shadow-lg transition-colors duration-300 ${isHovered ? 'border-primary/50 text-primary shadow-[0_0_15px_rgba(170,59,255,0.3)]' : 'border-white/10 text-gray-400'}`}>
                       {project.icon}
                     </div>
-                    <div className="flex gap-3">
-                      <a href={project.githubUrl} target="_blank" rel="noopener noreferrer" className="p-2 bg-white/5 border border-white/10 rounded-lg text-gray-400 hover:text-white hover:border-primary/50 transition-colors cursor-hover hover:shadow-[0_0_10px_rgba(170,59,255,0.2)]">
-                        <FaGithub className="w-5 h-5" />
+                    <div className="flex gap-3 relative z-50">
+                      <a href={project.githubUrl} target="_blank" rel="noopener noreferrer" className="p-2 bg-white/5 border border-white/10 rounded-lg text-gray-400 hover:text-white hover:border-primary/50 transition-colors cursor-hover hover:shadow-[0_0_10px_rgba(170,59,255,0.2)] flex items-center justify-center relative z-50">
+                        <FaGithub className="w-5 h-5 pointer-events-none" />
                       </a>
-                      <a href={project.liveUrl} target="_blank" rel="noopener noreferrer" className="p-2 bg-white/5 border border-white/10 rounded-lg text-gray-400 hover:text-white hover:border-primary/50 transition-colors cursor-hover hover:shadow-[0_0_10px_rgba(170,59,255,0.2)]">
-                        <ExternalLink className="w-5 h-5" />
+                      <a href={project.liveUrl} target="_blank" rel="noopener noreferrer" className="p-2 bg-white/5 border border-white/10 rounded-lg text-gray-400 hover:text-white hover:border-primary/50 transition-colors cursor-hover hover:shadow-[0_0_10px_rgba(170,59,255,0.2)] flex items-center justify-center relative z-50">
+                        <ExternalLink className="w-5 h-5 pointer-events-none" />
                       </a>
                     </div>
                   </div>
