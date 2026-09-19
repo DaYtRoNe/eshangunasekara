@@ -151,7 +151,7 @@ const Experience = () => {
             role: data.degree,
             company: data.institution || data.university || '',
             period: data.period || data.duration || '',
-            responsibilities: data.details ? data.details.split('\\n').filter(d => d.trim() !== '') : [],
+            responsibilities: data.details ? data.details.split(/\r?\n|\\n/).map(d => d.trim()).filter(Boolean) : [],
             icon: <GraduationCap className="w-5 h-5 text-gray-400" />,
             createdAt: data.createdAt
           };

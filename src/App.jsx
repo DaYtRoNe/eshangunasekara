@@ -47,8 +47,8 @@ const Portfolio = () => {
     <div className="min-h-screen bg-dark-900 text-gray-300 font-inter overflow-hidden relative">
       <SEO 
         title="Eshan Gunasekara | Software Engineering Undergraduate & Full-Stack Developer"
-        description="Portfolio of Eshan Gunasekara, a Software Engineering Undergraduate at SLIIT specializing in Full-Stack Development and AI. Explore my projects and skills."
-        keywords="Eshan Gunasekara, eshan gunasekara, Software Engineer Sri Lanka, Full-Stack Developer, SLIIT, React Developer, Node.js"
+        description="Eshan Gunasekara is a software engineering undergraduate at Birmingham City University, based in Sri Lanka. He builds web and Android apps with React, Java and Firebase."
+        keywords="Eshan Gunasekara, eshan gunasekara, Software Engineer Sri Lanka, Full-Stack Developer, Birmingham City University, React Developer, Android Developer"
         url="https://eshangunasekara.vercel.app/"
       />
       <AnimatedBackground />

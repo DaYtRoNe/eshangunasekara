@@ -42,14 +42,6 @@ const Footer = () => {
           
           {/* Left Column: CTA */}
           <div className="flex flex-col items-start">
-            <div className="flex items-center gap-3 mb-8 px-5 py-2.5 rounded-full border border-white/10 bg-dark-900/50 backdrop-blur-md shadow-lg shadow-black/50 cursor-hover hover:border-white/20 transition-colors">
-              <span className="relative flex h-3 w-3">
-                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75"></span>
-                <span className="relative inline-flex rounded-full h-3 w-3 bg-green-500 border border-dark-900"></span>
-              </span>
-              <span className="text-sm font-medium text-gray-300">Available for Opportunities</span>
-            </div>
-
             <h2 className="text-4xl md:text-6xl lg:text-7xl font-bold text-white mb-6 leading-[1.1] font-outfit">
               Let's build <br/>
               <span className="text-transparent bg-clip-text bg-gradient-to-r from-primary to-indigo-400 italic">extraordinary</span>

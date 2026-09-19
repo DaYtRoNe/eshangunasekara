@@ -139,7 +139,7 @@ const CVTemplate = ({ data }) => {
         {/* Header Section */}
         <View style={styles.header}>
           <Text style={styles.name}>{settings.name || 'Eshan Gunasekara'}</Text>
-          <Text style={styles.titleLine}>Software Engineering Undergraduate • Full-Stack Developer • AI Enthusiast</Text>
+          <Text style={styles.titleLine}>Software Engineering Undergraduate • Full-Stack Developer</Text>
           
           <View style={styles.contactRow}>
             <Text style={styles.contactItem}>■ Matale, Sri Lanka</Text>
@@ -185,7 +185,7 @@ const CVTemplate = ({ data }) => {
             <View wrap={false}>
               <Text style={[styles.sectionTitle, { marginTop: 0 }]}>Profile</Text>
               <Text style={styles.profileText}>
-                {settings.cvProfile || settings.aboutMe || "A passionate Software Engineering undergraduate specialising in full-stack development with a strong interest in AI and emerging technologies."}
+                {settings.cvProfile || settings.aboutMe || "Software engineering undergraduate at Birmingham City University. I build web and Android apps with React, Java and Firebase."}
               </Text>
             </View>
 

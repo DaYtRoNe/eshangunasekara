@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { motion, useMotionValue, useSpring, useTransform } from 'framer-motion';
-import { ArrowRight, Code2, Cpu, MapPin, Sparkles, Download, Loader2 } from 'lucide-react';
+import { ArrowRight, Code2, MapPin, Sparkles, Download, Loader2 } from 'lucide-react';
 import { FaGithub, FaLinkedin, FaWhatsapp } from 'react-icons/fa';
 import { Link } from 'react-scroll';
 import toast from 'react-hot-toast';
@@ -31,9 +31,6 @@ const FloatingNode = ({ icon, text, delay, className, mouseX, mouseY, depth }) =
   );
 };
 
-import { doc, getDoc } from 'firebase/firestore';
-import { db } from '../config/firebase';
-
 const Hero = ({ globalSettings }) => {
   const mouseX = useMotionValue(0);
   const mouseY = useMotionValue(0);
@@ -41,7 +38,7 @@ const Hero = ({ globalSettings }) => {
   
   // Use globalSettings directly or fallback to empty strings to avoid FOUC
   const settings = globalSettings || {
-    aboutMe: "I build scalable applications with clean architecture and highly modern user experiences.",
+    aboutMe: "Software engineering student. I build web and Android apps.",
     linkedinUrl: "",
     whatsappUrl: "",
     githubUrl: ""
@@ -94,7 +91,7 @@ const Hero = ({ globalSettings }) => {
             <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75"></span>
             <span className="relative inline-flex rounded-full h-3 w-3 bg-green-500 border border-dark-900"></span>
           </span>
-          <span className="text-sm font-semibold text-gray-300 tracking-wide uppercase">Available for New Projects</span>
+          <span className="text-sm font-semibold text-gray-300 tracking-wide uppercase">Open to internships &amp; freelance work</span>
         </motion.div>
 
         {/* Central Typography and Nodes */}
@@ -108,19 +105,12 @@ const Hero = ({ globalSettings }) => {
             mouseX={smoothMouseX} mouseY={smoothMouseY} depth={1.2}
             className="-top-8 -left-10 xl:-left-24"
           />
-          <FloatingNode 
-            icon={<Cpu className="w-5 h-5" />} 
-            text="AI & Emerging Tech" 
+          <FloatingNode
+            icon={<MapPin className="w-5 h-5" />}
+            text="Based in Sri Lanka"
             delay={0.4}
             mouseX={smoothMouseX} mouseY={smoothMouseY} depth={-0.8}
             className="-bottom-12 -right-4 xl:-right-16"
-          />
-          <FloatingNode 
-            icon={<MapPin className="w-5 h-5" />} 
-            text="Based in Sri Lanka" 
-            delay={0.6}
-            mouseX={smoothMouseX} mouseY={smoothMouseY} depth={0.6}
-            className="top-12 -right-12 xl:-right-32"
           />
 
           {/* Main Name */}
@@ -226,7 +216,6 @@ const Hero = ({ globalSettings }) => {
         <div className="lg:hidden flex flex-col gap-4 mt-20 w-full max-w-sm px-4">
           {[
             { icon: <Code2 className="w-5 h-5"/>, text: "Full Stack Engineer" },
-            { icon: <Cpu className="w-5 h-5"/>, text: "AI & Emerging Tech" },
             { icon: <MapPin className="w-5 h-5"/>, text: "Based in Sri Lanka" }
           ].map((node, i) => (
              <motion.div

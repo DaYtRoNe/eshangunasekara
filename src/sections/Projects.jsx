@@ -1,29 +1,14 @@
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Code2, ExternalLink, Monitor, Smartphone, Globe, ArrowRight, AlertTriangle, RefreshCw } from 'lucide-react';
-import { FaGithub } from 'react-icons/fa';
+import { Code2, Monitor, Smartphone, Globe, ArrowRight, AlertTriangle, RefreshCw } from 'lucide-react';
 import { Link } from 'react-router-dom';
 
 import { collection, getDocs, orderBy, query } from 'firebase/firestore';
 import { db } from '../config/firebase';
 import { getFetchErrorMessage } from '../utils/fetchError';
+import ProjectCard from '../components/ProjectCard';
 
 const categories = ['All', 'Web', 'Mobile', 'Desktop'];
-
-// Define colors for tech badges to make them "Neon Cyber-Badges"
-const techColors = {
-  'React.js': 'border-blue-500/50 text-blue-400',
-  'React': 'border-blue-500/50 text-blue-400',
-  'React Native': 'border-blue-400/50 text-blue-300',
-  'Node.js': 'border-green-500/50 text-green-400',
-  'Firebase': 'border-yellow-500/50 text-yellow-400',
-  'Tailwind CSS': 'border-cyan-500/50 text-cyan-400',
-  'Java': 'border-orange-500/50 text-orange-400',
-  'PHP': 'border-indigo-400/50 text-indigo-300',
-  'MySQL': 'border-blue-300/50 text-blue-200',
-  'TypeScript': 'border-blue-600/50 text-blue-500',
-  'Android Studio': 'border-green-400/50 text-green-300',
-};
 
 const Projects = () => {
   const [projects, setProjects] = useState([]);
@@ -139,76 +124,16 @@ const Projects = () => {
           className="grid md:grid-cols-2 xl:grid-cols-3 gap-8"
         >
           <AnimatePresence mode="popLayout">
-            {filteredProjects.slice(0, 6).map((project, idx) => {
-              // We check hover by title to maintain stable state across filtering
-              const isHovered = hoveredIndex === project.title;
-              const isAnotherHovered = hoveredIndex !== null && hoveredIndex !== project.title;
-
-              return (
-                <motion.div
-                  layout
-                  key={project.title}
-                  initial={{ opacity: 0, scale: 0.8 }}
-                  animate={{ 
-                    opacity: isAnotherHovered ? 0.3 : 1, 
-                    scale: isAnotherHovered ? 0.96 : 1,
-                    filter: isAnotherHovered ? "blur(3px)" : "blur(0px)",
-                  }}
-                  exit={{ opacity: 0, scale: 0.8, filter: "blur(10px)" }}
-                  transition={{ duration: 0.4 }}
-                  onMouseEnter={() => setHoveredIndex(project.title)}
-                  onMouseLeave={() => setHoveredIndex(null)}
-                  className={`glass-card p-8 flex flex-col h-full relative transition-all duration-300 ${
-                    isHovered ? 'shadow-[0_0_30px_rgba(170,59,255,0.15)] border-primary/40 -translate-y-2' : 'border-white/10 hover:border-white/20'
-                  }`}
-                >
-                  {/* Subtle Grid Background for Tech feel */}
-                  <div className="absolute inset-0 opacity-[0.02] pointer-events-none rounded-2xl" style={{ backgroundImage: 'linear-gradient(rgba(255,255,255,1) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,1) 1px, transparent 1px)', backgroundSize: '15px 15px' }} />
-                  
-                  {/* Header */}
-                  <div className="flex justify-between items-start mb-6 relative z-10">
-                    <div className={`p-3 bg-dark-800 border rounded-xl shadow-lg transition-colors duration-300 ${isHovered ? 'border-primary/50 text-primary shadow-[0_0_15px_rgba(170,59,255,0.3)]' : 'border-white/10 text-gray-400'}`}>
-                      {project.icon}
-                    </div>
-                    <div className="flex gap-3 relative z-50">
-                      <a href={project.githubUrl} target="_blank" rel="noopener noreferrer" className="p-2 bg-white/5 border border-white/10 rounded-lg text-gray-400 hover:text-white hover:border-primary/50 transition-colors cursor-hover hover:shadow-[0_0_10px_rgba(170,59,255,0.2)] flex items-center justify-center relative z-50">
-                        <FaGithub className="w-5 h-5 pointer-events-none" />
-                      </a>
-                      <a href={project.liveUrl} target="_blank" rel="noopener noreferrer" className="p-2 bg-white/5 border border-white/10 rounded-lg text-gray-400 hover:text-white hover:border-primary/50 transition-colors cursor-hover hover:shadow-[0_0_10px_rgba(170,59,255,0.2)] flex items-center justify-center relative z-50">
-                        <ExternalLink className="w-5 h-5 pointer-events-none" />
-                      </a>
-                    </div>
-                  </div>
-
-                  {/* Body */}
-                  <div className="relative z-10 flex-1">
-                    <h3 className={`text-2xl font-bold mb-3 transition-colors ${isHovered ? 'text-primary' : 'text-white'}`}>
-                      {project.title}
-                    </h3>
-                    <p className="text-gray-400 text-sm leading-relaxed mb-8">
-                      {project.description}
-                    </p>
-                  </div>
-
-                  {/* Tech Stack Cyber-Badges */}
-                  <div className="relative z-10 mt-auto pt-6 border-t border-white/5">
-                    <div className="flex flex-wrap gap-2">
-                      {project.tech.map((tech, tIdx) => {
-                        const colorClass = techColors[tech] || 'border-primary/30 text-primary/80';
-                        return (
-                          <span 
-                            key={tIdx} 
-                            className={`text-[11px] font-mono tracking-wider px-2.5 py-1 bg-dark-950/80 rounded-md border ${colorClass} shadow-sm backdrop-blur-md`}
-                          >
-                            {tech}
-                          </span>
-                        );
-                      })}
-                    </div>
-                  </div>
-                </motion.div>
-              );
-            })}
+            {filteredProjects.slice(0, 6).map((project) => (
+              <ProjectCard
+                key={project.id}
+                project={project}
+                isHovered={hoveredIndex === project.id}
+                isAnotherHovered={hoveredIndex !== null && hoveredIndex !== project.id}
+                onHoverStart={() => setHoveredIndex(project.id)}
+                onHoverEnd={() => setHoveredIndex(null)}
+              />
+            ))}
           </AnimatePresence>
         </motion.div>
         )}

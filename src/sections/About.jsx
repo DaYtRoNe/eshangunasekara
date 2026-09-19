@@ -1,6 +1,6 @@
 import React, { useRef, useState, useEffect } from 'react';
 import { motion, useMotionValue, useTransform, useInView } from 'framer-motion';
-import { User, Terminal, Code, Coffee } from 'lucide-react';
+import { User, Terminal } from 'lucide-react';
 
 const TypewriterText = ({ text, delay = 0 }) => {
   const ref = useRef(null);
@@ -108,15 +108,6 @@ const About = ({ globalSettings }) => {
                 {/* Hologram Grid Background */}
                 <div className="absolute inset-0 opacity-20 pointer-events-none" style={{ backgroundImage: 'linear-gradient(rgba(255,255,255,0.1) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.1) 1px, transparent 1px)', backgroundSize: '20px 20px' }} />
                 
-                {/* Status Indicator */}
-                <div className="w-full flex justify-between items-center mb-6 md:mb-8 relative z-10" style={{ transform: "translateZ(20px)" }}>
-                  <div className="text-xs font-mono text-gray-400">ID: 8472-A9</div>
-                  <div className="flex items-center gap-2 px-3 py-1 bg-green-500/10 border border-green-500/20 rounded-full shadow-lg">
-                    <span className="w-2 h-2 rounded-full bg-green-500 animate-pulse" />
-                    <span className="text-xs font-medium text-green-400">Online</span>
-                  </div>
-                </div>
-
                 {/* Avatar Placeholder / Image */}
                 <div 
                   className={`w-24 h-24 md:w-32 md:h-32 rounded-full border-2 ${hasAvatar ? 'border-primary' : 'border-primary/50'} mb-6 relative z-10 overflow-hidden bg-dark-800 flex items-center justify-center shadow-[0_0_30px_rgba(170,59,255,0.3)] transition-transform duration-300 group-hover:scale-105`}
@@ -141,16 +132,6 @@ const About = ({ globalSettings }) => {
                   transition={{ duration: 3, ease: "linear", repeat: Infinity }}
                 />
               </div>
-            </motion.div>
-
-            {/* Floating Metric 1 */}
-            <motion.div
-              animate={{ y: [-10, 10, -10] }}
-              transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }}
-              className="absolute -top-4 -left-2 md:-left-8 glass px-3 md:px-4 py-2 rounded-xl flex items-center gap-2 md:gap-3 cursor-hover border border-white/10 shadow-lg shadow-black/50 z-30"
-            >
-              <div className="p-1.5 md:p-2 bg-primary/20 rounded-lg text-primary"><Code className="w-3 h-3 md:w-4 md:h-4" /></div>
-              <span className="text-xs md:text-sm font-bold text-white">10K+ Lines</span>
             </motion.div>
           </motion.div>
 
@@ -203,16 +184,6 @@ const About = ({ globalSettings }) => {
                 </div>
               </div>
             </div>
-
-            {/* Floating Metric 2 */}
-            <motion.div
-              animate={{ y: [10, -10, 10] }}
-              transition={{ duration: 5, repeat: Infinity, ease: "easeInOut" }}
-              className="absolute -bottom-6 -right-4 md:-right-8 glass px-4 py-2 rounded-xl flex items-center gap-3 cursor-hover border border-white/10 shadow-lg shadow-black/50 z-30"
-            >
-              <div className="p-2 bg-yellow-500/20 rounded-lg text-yellow-400"><Coffee className="w-4 h-4" /></div>
-              <span className="text-sm font-bold text-white">Infinite Coffee</span>
-            </motion.div>
           </motion.div>
 
         </div>
