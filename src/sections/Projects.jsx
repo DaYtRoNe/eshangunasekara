@@ -67,7 +67,7 @@ const Projects = () => {
           transition={{ duration: 0.6, type: "spring" }}
           className="flex flex-col items-center mb-16"
         >
-          <div className="inline-flex items-center justify-center p-3 glass rounded-2xl mb-4 cursor-hover border border-white/10 shadow-[0_0_15px_rgba(170,59,255,0.2)]">
+          <div className="inline-flex items-center justify-center p-3 glass rounded-2xl mb-4 border border-white/10 shadow-[0_0_15px_rgba(170,59,255,0.2)]">
             <Code2 className="w-8 h-8 text-primary" />
           </div>
           <h2 className="text-4xl md:text-5xl font-bold font-outfit mb-4 text-white tracking-wide">Featured <span className="text-primary">Projects</span></h2>
@@ -80,7 +80,7 @@ const Projects = () => {
                 <button
                   key={cat}
                   onClick={() => setActiveFilter(cat)}
-                  className={`relative px-6 py-2 rounded-full text-sm font-medium transition-colors cursor-hover ${
+                  className={`relative px-6 py-2 rounded-full text-sm font-medium transition-colors ${
                     activeFilter === cat ? 'text-white' : 'text-gray-400 hover:text-gray-200'
                   }`}
                 >
@@ -113,7 +113,7 @@ const Projects = () => {
             <p className="text-gray-400 text-sm mb-6">{error}</p>
             <button
               onClick={retry}
-              className="inline-flex items-center gap-2 px-5 py-2 rounded-full glass border border-white/10 text-sm text-white hover:border-primary/50 hover:bg-primary/10 transition-all cursor-hover"
+              className="inline-flex items-center gap-2 px-5 py-2 rounded-full glass border border-white/10 text-sm text-white hover:border-primary/50 hover:bg-primary/10 transition-all"
             >
               <RefreshCw className="w-4 h-4" /> Try again
             </button>
@@ -147,7 +147,7 @@ const Projects = () => {
           >
             <Link 
               to="/projects"
-              className="group flex items-center gap-3 px-8 py-4 glass rounded-full font-bold text-white border border-white/10 hover:border-primary/50 hover:bg-primary/10 transition-all cursor-hover"
+              className="group flex items-center gap-3 px-8 py-4 glass rounded-full font-bold text-white border border-white/10 hover:border-primary/50 hover:bg-primary/10 transition-all"
             >
               View All Projects
               <ArrowRight className="w-5 h-5 transition-transform group-hover:translate-x-1" />

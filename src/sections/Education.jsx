@@ -26,7 +26,7 @@ const Education = () => {
           transition={{ duration: 0.8, ease: "easeOut" }}
           className="flex flex-col items-center mb-16"
         >
-          <div className="inline-flex items-center justify-center p-3 glass rounded-2xl mb-4 cursor-hover">
+          <div className="inline-flex items-center justify-center p-3 glass rounded-2xl mb-4">
             <GraduationCap className="w-8 h-8 text-primary" />
           </div>
           <h2 className="text-3xl md:text-5xl font-bold font-outfit mb-4">Education</h2>
@@ -42,7 +42,7 @@ const Education = () => {
               viewport={{ once: false, amount: 0.2 }}
               transition={{ duration: 0.8, delay: idx * 0.2, ease: "easeOut" }}
               whileHover={{ scale: 1.03, y: -5 }}
-              className="glass-card p-8 flex flex-col relative overflow-hidden group cursor-hover shadow-lg hover:shadow-primary/20 hover:border-primary/30 transition-colors"
+              className="glass-card p-8 flex flex-col relative overflow-hidden group shadow-lg hover:shadow-primary/20 hover:border-primary/30 transition-colors"
             >
               <div className="absolute -right-10 -top-10 w-32 h-32 bg-primary/10 rounded-full blur-2xl group-hover:bg-primary/30 transition-all duration-500 pointer-events-none" />
               

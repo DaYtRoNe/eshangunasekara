@@ -31,7 +31,7 @@ const NotFound = () => {
 
         <button 
           onClick={() => navigate('/')}
-          className="group relative px-8 py-4 glass text-white rounded-2xl font-bold text-lg border border-white/10 hover:border-primary/50 transition-all flex items-center justify-center gap-3 shadow-lg mx-auto cursor-hover hover:-translate-y-1 hover:shadow-[0_0_20px_rgba(170,59,255,0.2)]"
+          className="group relative px-8 py-4 glass text-white rounded-2xl font-bold text-lg border border-white/10 hover:border-primary/50 transition-all flex items-center justify-center gap-3 shadow-lg mx-auto hover:-translate-y-1 hover:shadow-[0_0_20px_rgba(170,59,255,0.2)]"
         >
           <Home className="w-5 h-5 text-gray-300 group-hover:text-white transition-colors" />
           <span className="text-gray-200 group-hover:text-white transition-colors">Return Home</span>

@@ -101,9 +101,3 @@
     100% { transform: translateX(100%); }
   }
 }
-
-@media (pointer: fine) {
-  * {
-    cursor: none !important;
-  }
-}

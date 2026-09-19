@@ -18,7 +18,7 @@ const techColors = {
   'Android Studio': 'border-green-400/50 text-green-300',
 };
 
-const linkClass = "p-2 bg-white/5 border border-white/10 rounded-lg text-gray-400 hover:text-white hover:border-primary/50 transition-colors cursor-hover hover:shadow-[0_0_10px_rgba(170,59,255,0.2)] flex items-center justify-center relative z-50";
+const linkClass = "p-2 bg-white/5 border border-white/10 rounded-lg text-gray-400 hover:text-white hover:border-primary/50 transition-colors hover:shadow-[0_0_10px_rgba(170,59,255,0.2)] flex items-center justify-center relative z-50";
 
 const ProjectCard = ({ project, isHovered, isAnotherHovered, onHoverStart, onHoverEnd }) => {
   const hasGithub = Boolean(project.githubUrl);

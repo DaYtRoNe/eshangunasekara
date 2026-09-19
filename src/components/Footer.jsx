@@ -51,7 +51,7 @@ const Footer = () => {
 
             <a 
               href="mailto:eshangunsekara@gmail.com"
-              className="group inline-flex items-center gap-6 text-xl md:text-2xl lg:text-3xl font-medium text-gray-400 hover:text-white transition-colors cursor-hover mt-4"
+              className="group inline-flex items-center gap-6 text-xl md:text-2xl lg:text-3xl font-medium text-gray-400 hover:text-white transition-colors mt-4"
             >
               eshangunsekara@gmail.com
               <span className="w-14 h-14 rounded-full border border-white/20 flex items-center justify-center group-hover:bg-primary group-hover:border-primary transition-all duration-300 transform group-hover:scale-110 group-hover:rotate-12 shadow-[0_0_15px_rgba(170,59,255,0)] group-hover:shadow-[0_0_20px_rgba(170,59,255,0.4)]">
@@ -68,7 +68,7 @@ const Footer = () => {
                 <ul className="space-y-5">
                   {['Home', 'About', 'Projects', 'Experience', 'Contact'].map((item) => (
                     <li key={item}>
-                      <a href={`#${item.toLowerCase()}`} className="text-gray-300 hover:text-white transition-colors text-lg md:text-xl font-medium cursor-hover relative group inline-block">
+                      <a href={`#${item.toLowerCase()}`} className="text-gray-300 hover:text-white transition-colors text-lg md:text-xl font-medium relative group inline-block">
                         {item}
                         <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-primary transition-all duration-300 group-hover:w-full"></span>
                       </a>
@@ -87,7 +87,7 @@ const Footer = () => {
                     { name: 'Twitter', icon: <FaTwitter/>, url: '#' }
                   ].map((social) => (
                     <li key={social.name}>
-                      <a href={social.url} className="text-gray-300 hover:text-white transition-colors text-lg md:text-xl font-medium cursor-hover flex items-center gap-4 group">
+                      <a href={social.url} className="text-gray-300 hover:text-white transition-colors text-lg md:text-xl font-medium flex items-center gap-4 group">
                         <span className="text-gray-500 group-hover:text-primary transition-colors text-xl">{social.icon}</span>
                         {social.name}
                         <span className="absolute -bottom-1 left-8 w-0 h-0.5 bg-primary transition-all duration-300 group-hover:w-[calc(100%-2rem)]"></span>
@@ -118,7 +118,7 @@ const Footer = () => {
             {/* Back to Top */}
             <button 
               onClick={scrollToTop}
-              className="w-12 h-12 rounded-full bg-dark-800 border border-white/10 flex items-center justify-center text-gray-400 hover:text-white hover:bg-primary hover:border-primary transition-all duration-300 group cursor-hover shadow-lg"
+              className="w-12 h-12 rounded-full bg-dark-800 border border-white/10 flex items-center justify-center text-gray-400 hover:text-white hover:bg-primary hover:border-primary transition-all duration-300 group shadow-lg"
               title="Back to top"
             >
               <ArrowUp className="w-5 h-5 group-hover:-translate-y-1 transition-transform" />

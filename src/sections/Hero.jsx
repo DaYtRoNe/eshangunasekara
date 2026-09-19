@@ -1,39 +1,12 @@
-import React, { useState, useEffect } from 'react';
-import { motion, useMotionValue, useSpring, useTransform } from 'framer-motion';
-import { ArrowRight, Code2, MapPin, Sparkles, Download, Loader2 } from 'lucide-react';
+import React, { useState } from 'react';
+import { motion } from 'framer-motion';
+import { ArrowRight, Sparkles, Download, Loader2 } from 'lucide-react';
 import { FaGithub, FaLinkedin, FaWhatsapp } from 'react-icons/fa';
 import { Link } from 'react-scroll';
 import toast from 'react-hot-toast';
 import { generateCV } from '../utils/generateCV';
 
-const FloatingNode = ({ icon, text, delay, className, mouseX, mouseY, depth }) => {
-  // Parallax effect based on mouse movement
-  const x = useTransform(mouseX, [0, typeof window !== 'undefined' ? window.innerWidth : 1000], [depth * 25, -depth * 25]);
-  const y = useTransform(mouseY, [0, typeof window !== 'undefined' ? window.innerHeight : 1000], [depth * 25, -depth * 25]);
-
-  return (
-    <motion.div
-      style={{ x, y }}
-      initial={{ opacity: 0, scale: 0.8, y: 30 }}
-      animate={{ opacity: 1, scale: 1, y: 0 }}
-      transition={{ duration: 1, delay, type: "spring", bounce: 0.4 }}
-      className={`absolute hidden lg:flex items-center gap-4 px-6 py-3.5 glass rounded-2xl border border-white/10 shadow-2xl backdrop-blur-md cursor-hover hover:border-primary/50 transition-colors z-20 ${className}`}
-    >
-      <motion.div 
-        animate={{ y: [-3, 3, -3] }}
-        transition={{ duration: 4, repeat: Infinity, ease: "easeInOut", delay }}
-        className="p-2.5 bg-dark-800/80 rounded-xl text-primary shadow-[0_0_15px_rgba(170,59,255,0.3)] border border-white/5"
-      >
-        {icon}
-      </motion.div>
-      <span className="font-semibold text-gray-200 tracking-wide text-sm whitespace-nowrap">{text}</span>
-    </motion.div>
-  );
-};
-
 const Hero = ({ globalSettings }) => {
-  const mouseX = useMotionValue(0);
-  const mouseY = useMotionValue(0);
   const [isGeneratingCV, setIsGeneratingCV] = useState(false);
   
   // Use globalSettings directly or fallback to empty strings to avoid FOUC
@@ -43,19 +16,6 @@ const Hero = ({ globalSettings }) => {
     whatsappUrl: "",
     githubUrl: ""
   };
-
-  // Smooth out the mouse values for buttery parallax
-  const smoothMouseX = useSpring(mouseX, { damping: 50, stiffness: 400 });
-  const smoothMouseY = useSpring(mouseY, { damping: 50, stiffness: 400 });
-
-  useEffect(() => {
-    const handleMouseMove = (e) => {
-      mouseX.set(e.clientX);
-      mouseY.set(e.clientY);
-    };
-    window.addEventListener("mousemove", handleMouseMove);
-    return () => window.removeEventListener("mousemove", handleMouseMove);
-  }, [mouseX, mouseY]);
 
   return (
     <section id="home" className="relative min-h-screen flex items-center justify-center overflow-hidden bg-dark-950 pt-20">
@@ -85,7 +45,7 @@ const Hero = ({ globalSettings }) => {
           initial={{ opacity: 0, y: -20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6 }}
-          className="inline-flex items-center gap-3 px-6 py-2.5 rounded-full border border-white/10 bg-dark-900/60 backdrop-blur-md shadow-lg mb-10 cursor-hover hover:border-white/20 transition-colors"
+          className="inline-flex items-center gap-3 px-6 py-2.5 rounded-full border border-white/10 bg-dark-900/60 backdrop-blur-md shadow-lg mb-10 hover:border-white/20 transition-colors"
         >
           <span className="relative flex h-3 w-3">
             <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75"></span>
@@ -94,25 +54,8 @@ const Hero = ({ globalSettings }) => {
           <span className="text-sm font-semibold text-gray-300 tracking-wide uppercase">Open to internships &amp; freelance work</span>
         </motion.div>
 
-        {/* Central Typography and Nodes */}
+        {/* Central Typography */}
         <div className="relative w-full max-w-5xl mx-auto flex justify-center py-12">
-          
-          {/* Floating Nodes (Desktop Parallax) */}
-          <FloatingNode 
-            icon={<Code2 className="w-5 h-5" />} 
-            text="Full Stack Engineer" 
-            delay={0.2}
-            mouseX={smoothMouseX} mouseY={smoothMouseY} depth={1.2}
-            className="-top-8 -left-10 xl:-left-24"
-          />
-          <FloatingNode
-            icon={<MapPin className="w-5 h-5" />}
-            text="Based in Sri Lanka"
-            delay={0.4}
-            mouseX={smoothMouseX} mouseY={smoothMouseY} depth={-0.8}
-            className="-bottom-12 -right-4 xl:-right-16"
-          />
-
           {/* Main Name */}
           <motion.div
             initial={{ opacity: 0, scale: 0.95 }}
@@ -147,7 +90,7 @@ const Hero = ({ globalSettings }) => {
               to="projects"
               smooth={true}
               duration={500}
-              className="group relative px-8 py-4 bg-primary text-white rounded-2xl font-bold text-lg transition-all flex items-center gap-3 cursor-pointer overflow-hidden shadow-[0_0_20px_rgba(170,59,255,0.4)] hover:shadow-[0_0_35px_rgba(170,59,255,0.6)] cursor-hover hover:-translate-y-1"
+              className="group relative px-8 py-4 bg-primary text-white rounded-2xl font-bold text-lg transition-all flex items-center gap-3 cursor-pointer overflow-hidden shadow-[0_0_20px_rgba(170,59,255,0.4)] hover:shadow-[0_0_35px_rgba(170,59,255,0.6)] hover:-translate-y-1"
             >
               <div className="absolute inset-0 w-1/2 bg-gradient-to-r from-transparent via-white/30 to-transparent -translate-x-[150%] group-hover:animate-shimmer" />
               <Sparkles className="w-5 h-5 group-hover:rotate-12 transition-transform" />
@@ -180,7 +123,7 @@ const Hero = ({ globalSettings }) => {
                   setIsGeneratingCV(false);
                 }
               }}
-              className="group relative px-8 py-4 glass text-white rounded-2xl font-bold text-lg border border-white/10 hover:border-primary/50 transition-all flex items-center gap-3 shadow-lg cursor-hover hover:-translate-y-1 hover:shadow-[0_0_20px_rgba(170,59,255,0.2)] disabled:opacity-50 disabled:cursor-wait"
+              className="group relative px-8 py-4 glass text-white rounded-2xl font-bold text-lg border border-white/10 hover:border-primary/50 transition-all flex items-center gap-3 shadow-lg hover:-translate-y-1 hover:shadow-[0_0_20px_rgba(170,59,255,0.2)] disabled:opacity-50 disabled:cursor-wait"
             >
               {isGeneratingCV ? (
                 <Loader2 className="w-5 h-5 text-primary animate-spin" />
@@ -195,42 +138,22 @@ const Hero = ({ globalSettings }) => {
 
           <div className="flex items-center gap-5">
             {settings.linkedinUrl && (
-              <a href={settings.linkedinUrl} target="_blank" rel="noreferrer" className="p-5 glass rounded-2xl border border-white/10 hover:border-primary/50 text-gray-400 hover:text-white transition-all hover:-translate-y-1 hover:shadow-[0_0_20px_rgba(170,59,255,0.3)] cursor-hover group">
+              <a href={settings.linkedinUrl} target="_blank" rel="noreferrer" className="p-5 glass rounded-2xl border border-white/10 hover:border-primary/50 text-gray-400 hover:text-white transition-all hover:-translate-y-1 hover:shadow-[0_0_20px_rgba(170,59,255,0.3)] group">
                 <FaLinkedin className="w-7 h-7 group-hover:scale-110 transition-transform" />
               </a>
             )}
             {settings.whatsappUrl && (
-              <a href={settings.whatsappUrl} target="_blank" rel="noreferrer" className="p-5 glass rounded-2xl border border-white/10 hover:border-primary/50 text-gray-400 hover:text-white transition-all hover:-translate-y-1 hover:shadow-[0_0_20px_rgba(170,59,255,0.3)] cursor-hover group">
+              <a href={settings.whatsappUrl} target="_blank" rel="noreferrer" className="p-5 glass rounded-2xl border border-white/10 hover:border-primary/50 text-gray-400 hover:text-white transition-all hover:-translate-y-1 hover:shadow-[0_0_20px_rgba(170,59,255,0.3)] group">
                 <FaWhatsapp className="w-7 h-7 group-hover:scale-110 transition-transform" />
               </a>
             )}
             {settings.githubUrl && (
-              <a href={settings.githubUrl} target="_blank" rel="noreferrer" className="p-5 glass rounded-2xl border border-white/10 hover:border-primary/50 text-gray-400 hover:text-white transition-all hover:-translate-y-1 hover:shadow-[0_0_20px_rgba(170,59,255,0.3)] cursor-hover group">
+              <a href={settings.githubUrl} target="_blank" rel="noreferrer" className="p-5 glass rounded-2xl border border-white/10 hover:border-primary/50 text-gray-400 hover:text-white transition-all hover:-translate-y-1 hover:shadow-[0_0_20px_rgba(170,59,255,0.3)] group">
                 <FaGithub className="w-7 h-7 group-hover:scale-110 transition-transform" />
               </a>
             )}
           </div>
         </motion.div>
-
-        {/* Mobile only Nodes Stack */}
-        <div className="lg:hidden flex flex-col gap-4 mt-20 w-full max-w-sm px-4">
-          {[
-            { icon: <Code2 className="w-5 h-5"/>, text: "Full Stack Engineer" },
-            { icon: <MapPin className="w-5 h-5"/>, text: "Based in Sri Lanka" }
-          ].map((node, i) => (
-             <motion.div
-               key={i}
-               initial={{ opacity: 0, y: 20 }}
-               whileInView={{ opacity: 1, y: 0 }}
-               viewport={{ once: true }}
-               transition={{ delay: 0.2 + (i * 0.1), type: "spring" }}
-               className="flex items-center gap-5 px-6 py-4 glass rounded-2xl border border-white/5 shadow-lg"
-             >
-               <div className="text-primary p-3 bg-dark-800 rounded-xl shadow-inner border border-white/5">{node.icon}</div>
-               <span className="text-base text-gray-300 font-semibold tracking-wide">{node.text}</span>
-             </motion.div>
-          ))}
-        </div>
 
       </div>
     </section>

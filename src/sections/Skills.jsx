@@ -118,7 +118,7 @@ const SkillsProfessional = () => {
           transition={{ duration: 0.6 }}
           className="flex flex-col items-center mb-16 text-center"
         >
-          <div className="inline-flex items-center justify-center p-2 bg-dark-800 rounded-lg mb-4 border border-white/5 cursor-hover">
+          <div className="inline-flex items-center justify-center p-2 bg-dark-800 rounded-lg mb-4 border border-white/5">
             <Sparkles className="w-5 h-5 text-gray-400" />
           </div>
           <h2 className="text-4xl md:text-5xl font-bold font-outfit mb-4 text-white tracking-tight">Technical Skills</h2>
@@ -128,7 +128,7 @@ const SkillsProfessional = () => {
         </motion.div>
 
         {/* Professional Bento Grid with Spotlight Effect */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-6xl mx-auto mb-20 cursor-hover">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-6xl mx-auto mb-20">
           {bentoData.map((category, idx) => (
             <SpotlightCard key={category.id} className={category.spanClass} delay={idx * 0.15}>
               <div className="flex items-center gap-3 mb-8 border-b border-white/5 pb-4">
@@ -156,7 +156,7 @@ const SkillsProfessional = () => {
         </div>
 
         {/* Clean Marquee */}
-        <div className="max-w-6xl mx-auto border-t border-white/5 pt-12 cursor-hover">
+        <div className="max-w-6xl mx-auto border-t border-white/5 pt-12">
           <div className="overflow-hidden relative bg-[#0f0f0f] rounded-2xl border border-white/5 py-6">
             <div className="absolute inset-y-0 left-0 w-24 bg-gradient-to-r from-[#0f0f0f] to-transparent z-10 pointer-events-none" />
             <div className="absolute inset-y-0 right-0 w-24 bg-gradient-to-l from-[#0f0f0f] to-transparent z-10 pointer-events-none" />

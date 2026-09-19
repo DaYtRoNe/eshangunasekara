@@ -43,7 +43,7 @@ const Navbar = () => {
             to="home" 
             smooth={true} 
             duration={500} 
-            className="flex items-center gap-2 cursor-hover group"
+            className="flex items-center gap-2 group"
             onClick={() => setActiveTab('Home')}
           >
             <motion.div whileHover={{ rotate: 180 }} transition={{ duration: 0.4 }}>
@@ -66,7 +66,7 @@ const Navbar = () => {
                 onSetActive={() => setActiveTab(link.name)}
                 onMouseEnter={() => setHoveredTab(link.name)}
                 onMouseLeave={() => setHoveredTab(null)}
-                className={`relative px-4 py-2 text-sm font-medium transition-colors cursor-hover rounded-full z-10 ${
+                className={`relative px-4 py-2 text-sm font-medium transition-colors rounded-full z-10 ${
                   activeTab === link.name || hoveredTab === link.name ? 'text-white' : 'text-gray-400'
                 }`}
               >
@@ -97,14 +97,14 @@ const Navbar = () => {
             to="contact"
             smooth={true}
             duration={500}
-            className="hidden md:block px-5 py-2 bg-primary hover:bg-primary-dark text-white rounded-full transition-all duration-300 cursor-hover font-medium text-sm shadow-lg shadow-primary/25 hover:shadow-primary/40 transform hover:scale-105"
+            className="hidden md:block px-5 py-2 bg-primary hover:bg-primary-dark text-white rounded-full transition-all duration-300 font-medium text-sm shadow-lg shadow-primary/25 hover:shadow-primary/40 transform hover:scale-105"
           >
             Hire Me
           </Link>
 
           {/* Mobile Menu Button */}
           <button
-            className="md:hidden text-gray-300 hover:text-white cursor-hover p-2 z-50 relative"
+            className="md:hidden text-gray-300 hover:text-white p-2 z-50 relative"
             onClick={() => setIsOpen(!isOpen)}
           >
             <motion.div animate={{ rotate: isOpen ? 90 : 0 }}>
@@ -149,7 +149,7 @@ const Navbar = () => {
                       setIsOpen(false);
                       setActiveTab(link.name);
                     }}
-                    className={`text-3xl font-bold font-outfit tracking-wider transition-colors cursor-hover ${
+                    className={`text-3xl font-bold font-outfit tracking-wider transition-colors ${
                       activeTab === link.name ? 'text-primary' : 'text-gray-300 hover:text-white'
                     }`}
                   >
@@ -168,7 +168,7 @@ const Navbar = () => {
                   smooth={true}
                   duration={500}
                   onClick={() => setIsOpen(false)}
-                  className="px-8 py-3 bg-primary hover:bg-primary-dark transition-colors text-white rounded-full text-lg font-medium shadow-lg shadow-primary/25 cursor-hover"
+                  className="px-8 py-3 bg-primary hover:bg-primary-dark transition-colors text-white rounded-full text-lg font-medium shadow-lg shadow-primary/25"
                 >
                   Let's Talk
                 </Link>

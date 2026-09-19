@@ -3,7 +3,6 @@ import { AnimatePresence, motion } from 'framer-motion';
 import { doc, getDoc } from 'firebase/firestore';
 import { db } from './config/firebase';
 import LoadingScreen from './components/LoadingScreen';
-import CustomCursor from './components/CustomCursor';
 import AnimatedBackground from './components/AnimatedBackground';
 import Navbar from './components/Navbar';
 import Hero from './sections/Hero';
@@ -84,7 +83,6 @@ function App() {
   return (
     <Router>
       <div className="selection:bg-primary/30 selection:text-white">
-        <CustomCursor />
         <Routes>
           <Route path="/" element={<Portfolio />} />
           <Route path="/projects" element={<AllProjects />} />

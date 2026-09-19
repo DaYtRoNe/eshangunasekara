@@ -83,7 +83,7 @@ const ExperienceItem = ({ exp, isLast }) => {
           <motion.div 
             whileHover={{ scale: 1.02, x: 5 }}
             transition={{ type: "spring", stiffness: 300, damping: 20 }}
-            className="glass-card p-6 md:p-8 relative cursor-hover hover:border-primary/40 transition-colors shadow-lg hover:shadow-primary/20 group overflow-hidden"
+            className="glass-card p-6 md:p-8 relative hover:border-primary/40 transition-colors shadow-lg hover:shadow-primary/20 group overflow-hidden"
           >
             {/* Subtle Gradient Glow inside card */}
             <div className="absolute inset-0 bg-gradient-to-br from-primary/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
@@ -181,7 +181,7 @@ const Experience = () => {
           transition={{ duration: 0.6, type: "spring" }}
           className="flex flex-col items-center mb-20"
         >
-          <div className="inline-flex items-center justify-center p-3 glass rounded-2xl mb-4 cursor-hover">
+          <div className="inline-flex items-center justify-center p-3 glass rounded-2xl mb-4">
             <Briefcase className="w-8 h-8 text-primary" />
           </div>
           <h2 className="text-4xl md:text-5xl font-bold font-outfit mb-4 text-white">Experience & Education</h2>
@@ -198,7 +198,7 @@ const Experience = () => {
               <p className="text-gray-400 text-sm mb-6">{error}</p>
               <button
                 onClick={retry}
-                className="inline-flex items-center gap-2 px-5 py-2 rounded-full glass border border-white/10 text-sm text-white hover:border-primary/50 hover:bg-primary/10 transition-all cursor-hover"
+                className="inline-flex items-center gap-2 px-5 py-2 rounded-full glass border border-white/10 text-sm text-white hover:border-primary/50 hover:bg-primary/10 transition-all"
               >
                 <RefreshCw className="w-4 h-4" /> Try again
               </button>

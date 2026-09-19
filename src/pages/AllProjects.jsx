@@ -6,7 +6,6 @@ import { Globe, Smartphone, Monitor, ArrowLeft, Search, Filter, AlertTriangle, R
 import { getFetchErrorMessage } from '../utils/fetchError';
 import { Link } from 'react-router-dom';
 import AnimatedBackground from '../components/AnimatedBackground';
-import CustomCursor from '../components/CustomCursor';
 import SEO from '../components/SEO';
 import ProjectCard from '../components/ProjectCard';
 
@@ -77,7 +76,6 @@ const AllProjects = () => {
         description="Browse through the complete portfolio of Eshan Gunasekara's software engineering projects. Web apps, Mobile apps, and Desktop applications."
         url="https://eshangunasekara.vercel.app/projects"
       />
-      <CustomCursor />
       <AnimatedBackground />
 
       {/* Main Content */}
@@ -85,7 +83,7 @@ const AllProjects = () => {
         
         {/* Header Section */}
         <div className="mb-12">
-          <Link to="/" className="inline-flex items-center gap-2 text-gray-400 hover:text-white transition-colors mb-8 group cursor-hover">
+          <Link to="/" className="inline-flex items-center gap-2 text-gray-400 hover:text-white transition-colors mb-8 group">
             <ArrowLeft className="w-4 h-4 transition-transform group-hover:-translate-x-1" />
             Back to Home
           </Link>
@@ -115,7 +113,7 @@ const AllProjects = () => {
               placeholder="Search by name or tech..." 
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              className="w-full bg-dark-800 border border-white/10 rounded-xl pl-12 pr-4 py-3 text-sm focus:outline-none focus:border-primary/50 text-white cursor-hover"
+              className="w-full bg-dark-800 border border-white/10 rounded-xl pl-12 pr-4 py-3 text-sm focus:outline-none focus:border-primary/50 text-white"
             />
           </div>
 
@@ -125,7 +123,7 @@ const AllProjects = () => {
               <button
                 key={cat}
                 onClick={() => setActiveFilter(cat)}
-                className={`px-5 py-2 rounded-full text-sm font-medium transition-colors cursor-hover ${
+                className={`px-5 py-2 rounded-full text-sm font-medium transition-colors ${
                   activeFilter === cat ? 'bg-primary text-white shadow-[0_0_15px_rgba(170,59,255,0.4)]' : 'bg-dark-800 text-gray-400 hover:text-white hover:bg-dark-700 border border-white/5'
                 }`}
               >
@@ -136,13 +134,13 @@ const AllProjects = () => {
 
           {/* Sort */}
           <div className="w-full lg:w-auto flex justify-end">
-            <div className="relative group cursor-hover">
+            <div className="relative group">
               <div className="flex items-center gap-2 bg-dark-800 border border-white/10 rounded-xl px-4 py-3 text-sm">
                 <Filter className="w-4 h-4 text-gray-400" />
                 <select 
                   value={sortOrder}
                   onChange={(e) => setSortOrder(e.target.value)}
-                  className="bg-transparent text-white focus:outline-none cursor-hover appearance-none pr-6"
+                  className="bg-transparent text-white focus:outline-none appearance-none pr-6"
                 >
                   <option value="newest" className="bg-dark-900 text-white">Date (Newest)</option>
                   <option value="oldest" className="bg-dark-900 text-white">Date (Oldest)</option>
@@ -165,7 +163,7 @@ const AllProjects = () => {
             <p className="text-gray-400 text-sm mb-6">{error}</p>
             <button
               onClick={retry}
-              className="inline-flex items-center gap-2 px-5 py-2 rounded-full glass border border-white/10 text-sm text-white hover:border-primary/50 hover:bg-primary/10 transition-all cursor-hover"
+              className="inline-flex items-center gap-2 px-5 py-2 rounded-full glass border border-white/10 text-sm text-white hover:border-primary/50 hover:bg-primary/10 transition-all"
             >
               <RefreshCw className="w-4 h-4" /> Try again
             </button>

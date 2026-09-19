@@ -175,7 +175,7 @@ const Contact = () => {
               whileInView={{ opacity: 1, x: 0 }}
               viewport={{ once: false, amount: 0.2 }}
               href="mailto:eshangunsekara@gmail.com"
-              className="glass-card p-6 flex items-center justify-between cursor-hover hover:border-primary/40 transition-all shadow-lg group relative overflow-hidden h-28 block"
+              className="glass-card p-6 flex items-center justify-between hover:border-primary/40 transition-all shadow-lg group relative overflow-hidden h-28 block"
             >
               <div className="absolute inset-0 bg-gradient-to-r from-primary/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
               <div className="flex items-center gap-5 relative z-10">
@@ -198,7 +198,7 @@ const Contact = () => {
               href={settings.whatsappUrl}
               target="_blank"
               rel="noreferrer"
-              className="glass-card p-6 flex items-center justify-between cursor-hover hover:border-primary/40 transition-all shadow-lg group relative overflow-hidden h-28 block"
+              className="glass-card p-6 flex items-center justify-between hover:border-primary/40 transition-all shadow-lg group relative overflow-hidden h-28 block"
             >
               <div className="absolute inset-0 bg-gradient-to-r from-primary/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
               <div className="flex items-center gap-5 relative z-10">
@@ -218,7 +218,7 @@ const Contact = () => {
               whileInView={{ opacity: 1, x: 0 }}
               viewport={{ once: false, amount: 0.2 }}
               transition={{ delay: 0.2 }}
-              className="glass-card p-6 flex items-center justify-between cursor-hover hover:border-primary/40 transition-all shadow-lg group relative overflow-hidden h-40"
+              className="glass-card p-6 flex items-center justify-between hover:border-primary/40 transition-all shadow-lg group relative overflow-hidden h-40"
             >
               <div className="flex items-start gap-5 relative z-10 h-full pt-2">
                 <div className="p-3.5 bg-dark-800 border border-white/10 rounded-xl text-primary shadow-inner group-hover:shadow-[0_0_15px_rgba(170,59,255,0.3)] transition-all">
@@ -255,7 +255,7 @@ const Contact = () => {
                   rel="noreferrer"
                   whileHover={{ scale: 1.25, y: -4 }}
                   whileTap={{ scale: 0.9 }}
-                  className="p-3 bg-dark-900 border border-white/10 rounded-full hover:border-primary/50 text-gray-400 hover:text-white transition-colors shadow-lg cursor-hover hover:shadow-[0_0_15px_rgba(170,59,255,0.3)]"
+                  className="p-3 bg-dark-900 border border-white/10 rounded-full hover:border-primary/50 text-gray-400 hover:text-white transition-colors shadow-lg hover:shadow-[0_0_15px_rgba(170,59,255,0.3)]"
                 >
                   {link.icon}
                 </motion.a>
@@ -284,7 +284,7 @@ const Contact = () => {
                     id="name"
                     required
                     disabled={formState !== 'idle'}
-                    className="bg-dark-950/50 border border-white/10 rounded-xl px-5 py-3.5 text-white focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary transition-all cursor-hover hover:bg-dark-950 disabled:opacity-50"
+                    className="bg-dark-950/50 border border-white/10 rounded-xl px-5 py-3.5 text-white focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary transition-all hover:bg-dark-950 disabled:opacity-50"
                     placeholder="John Doe"
                   />
                 </div>
@@ -295,7 +295,7 @@ const Contact = () => {
                     id="email" 
                     required
                     disabled={formState !== 'idle'}
-                    className="bg-dark-950/50 border border-white/10 rounded-xl px-5 py-3.5 text-white focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary transition-all cursor-hover hover:bg-dark-950 disabled:opacity-50"
+                    className="bg-dark-950/50 border border-white/10 rounded-xl px-5 py-3.5 text-white focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary transition-all hover:bg-dark-950 disabled:opacity-50"
                     placeholder="john@example.com"
                   />
                 </div>
@@ -308,7 +308,7 @@ const Contact = () => {
                   id="subject" 
                   required
                   disabled={formState !== 'idle'}
-                  className="bg-dark-950/50 border border-white/10 rounded-xl px-5 py-3.5 text-white focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary transition-all cursor-hover hover:bg-dark-950 disabled:opacity-50"
+                  className="bg-dark-950/50 border border-white/10 rounded-xl px-5 py-3.5 text-white focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary transition-all hover:bg-dark-950 disabled:opacity-50"
                   placeholder="Project Inquiry"
                 />
               </div>
@@ -321,7 +321,7 @@ const Contact = () => {
                     rows="6"
                     required
                     disabled={formState !== 'idle'}
-                    className="w-full bg-dark-950/50 border border-white/10 rounded-xl px-5 py-3.5 text-white focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary transition-all resize-none cursor-hover hover:bg-dark-950 disabled:opacity-50 relative z-10 bg-transparent"
+                    className="w-full bg-dark-950/50 border border-white/10 rounded-xl px-5 py-3.5 text-white focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary transition-all resize-none hover:bg-dark-950 disabled:opacity-50 relative z-10 bg-transparent"
                   />
                   {/* Typewriter Placeholder rendered underneath */}
                   <div className="absolute top-3.5 left-5 right-5 text-gray-500 pointer-events-none z-0 overflow-hidden break-words whitespace-pre-wrap">
@@ -336,7 +336,7 @@ const Contact = () => {
                 whileTap={formState === 'idle' ? { scale: 0.98 } : {}}
                 disabled={formState !== 'idle'}
                 type="submit"
-                className={`rounded-xl px-8 py-4 font-medium transition-all flex items-center justify-center gap-3 mt-4 w-full md:w-auto self-end cursor-hover
+                className={`rounded-xl px-8 py-4 font-medium transition-all flex items-center justify-center gap-3 mt-4 w-full md:w-auto self-end
                   ${formState === 'idle' ? 'bg-primary hover:bg-primary-dark text-white shadow-[0_0_20px_rgba(170,59,255,0.3)]' : ''}
                   ${formState === 'submitting' ? 'bg-dark-800 border border-primary text-primary' : ''}
                   ${formState === 'success' ? 'bg-green-500/20 border border-green-500 text-green-400' : ''}

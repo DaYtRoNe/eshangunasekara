@@ -71,7 +71,7 @@ const About = ({ globalSettings }) => {
           transition={{ duration: 0.6, type: "spring" }}
           className="flex flex-col items-center mb-16 text-center"
         >
-          <div className="inline-flex items-center justify-center p-3 glass rounded-2xl mb-4 cursor-hover">
+          <div className="inline-flex items-center justify-center p-3 glass rounded-2xl mb-4">
             <User className="w-8 h-8 text-primary" />
           </div>
           <h2 className="text-4xl md:text-5xl font-bold font-outfit mb-4 text-white">About Me</h2>
@@ -98,7 +98,7 @@ const About = ({ globalSettings }) => {
                 rotateY,
                 transformStyle: "preserve-3d",
               }}
-              className="relative w-full max-w-[280px] md:max-w-sm mx-auto aspect-[3/4] rounded-3xl cursor-hover group"
+              className="relative w-full max-w-[280px] md:max-w-sm mx-auto aspect-[3/4] rounded-3xl group"
             >
               {/* Outer Glow */}
               <div className="absolute inset-0 bg-gradient-to-br from-primary/30 via-indigo-500/20 to-transparent rounded-3xl blur-2xl group-hover:blur-3xl transition-all duration-500" />
@@ -147,9 +147,9 @@ const About = ({ globalSettings }) => {
               {/* Terminal Header */}
               <div className="bg-dark-950/80 px-4 py-3 flex items-center border-b border-white/5">
                 <div className="flex gap-2">
-                  <div className="w-3 h-3 rounded-full bg-red-500/80 cursor-hover hover:bg-red-500" />
-                  <div className="w-3 h-3 rounded-full bg-yellow-500/80 cursor-hover hover:bg-yellow-500" />
-                  <div className="w-3 h-3 rounded-full bg-green-500/80 cursor-hover hover:bg-green-500" />
+                  <div className="w-3 h-3 rounded-full bg-red-500/80 hover:bg-red-500" />
+                  <div className="w-3 h-3 rounded-full bg-yellow-500/80 hover:bg-yellow-500" />
+                  <div className="w-3 h-3 rounded-full bg-green-500/80 hover:bg-green-500" />
                 </div>
                 <div className="mx-auto flex items-center gap-2 text-gray-500 text-xs font-mono">
                   <Terminal className="w-3 h-3" /> guest@eshan-portfolio:~
