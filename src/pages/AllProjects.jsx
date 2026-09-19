@@ -2,7 +2,8 @@ import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { collection, getDocs, orderBy, query } from 'firebase/firestore';
 import { db } from '../config/firebase';
-import { Globe, Smartphone, Monitor, ArrowLeft, Search, Filter, ExternalLink } from 'lucide-react';
+import { Globe, Smartphone, Monitor, ArrowLeft, Search, Filter, ExternalLink, AlertTriangle, RefreshCw } from 'lucide-react';
+import { getFetchErrorMessage } from '../utils/fetchError';
 import { FaGithub } from 'react-icons/fa';
 import { Link } from 'react-router-dom';
 import AnimatedBackground from '../components/AnimatedBackground';
@@ -28,14 +29,20 @@ const techColors = {
 const AllProjects = () => {
   const [projects, setProjects] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+  const [reloadKey, setReloadKey] = useState(0);
   const [activeFilter, setActiveFilter] = useState('All');
   const [searchQuery, setSearchQuery] = useState('');
   const [sortOrder, setSortOrder] = useState('newest');
   const [hoveredIndex, setHoveredIndex] = useState(null);
 
+  const retry = () => setReloadKey(k => k + 1);
+
   useEffect(() => {
     window.scrollTo(0, 0);
     const fetchProjects = async () => {
+      setLoading(true);
+      setError(null);
       try {
         const q = query(collection(db, 'projects'), orderBy('createdAt', 'desc'));
         const querySnapshot = await getDocs(q);
@@ -52,14 +59,15 @@ const AllProjects = () => {
         });
 
         setProjects(mappedData);
-      } catch (error) {
-        console.error("Error fetching projects", error);
+      } catch (err) {
+        console.error("Error fetching projects", err);
+        setError(getFetchErrorMessage(err));
       } finally {
         setLoading(false);
       }
     };
     fetchProjects();
-  }, []);
+  }, [reloadKey]);
 
   // Filter & Sort Logic
   const filteredProjects = projects.filter(p => {
@@ -163,6 +171,18 @@ const AllProjects = () => {
         {loading ? (
           <div className="flex justify-center py-20">
             <div className="w-10 h-10 border-4 border-primary/30 border-t-primary rounded-full animate-spin" />
+          </div>
+        ) : error ? (
+          <div className="max-w-xl mx-auto glass rounded-3xl border border-red-500/20 p-8 text-center">
+            <AlertTriangle className="w-8 h-8 text-red-400 mx-auto mb-4" />
+            <h3 className="text-white font-semibold mb-2">Couldn't load projects</h3>
+            <p className="text-gray-400 text-sm mb-6">{error}</p>
+            <button
+              onClick={retry}
+              className="inline-flex items-center gap-2 px-5 py-2 rounded-full glass border border-white/10 text-sm text-white hover:border-primary/50 hover:bg-primary/10 transition-all cursor-hover"
+            >
+              <RefreshCw className="w-4 h-4" /> Try again
+            </button>
           </div>
         ) : filteredProjects.length === 0 ? (
           <div className="text-center py-20 text-gray-400 glass rounded-3xl border border-white/5">
