@@ -113,7 +113,7 @@ const CVGenerator = () => {
     <div className="space-y-8 animate-fade-in">
       <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
         <div>
-          <h2 className="text-3xl font-bold font-outfit text-white mb-2">Tailored CV Generator</h2>
+          <h2 className="text-3xl font-bold font-display text-white mb-2">Tailored CV Generator</h2>
           <p className="text-gray-400">Select specific projects and experience to include in a custom PDF CV.</p>
         </div>
         <button

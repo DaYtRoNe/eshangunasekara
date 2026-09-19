@@ -158,7 +158,7 @@ const ProjectsManager = () => {
     <div className="animate-in fade-in slide-in-from-bottom-4 duration-500">
       <div className="mb-8 flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div>
-          <h2 className="text-3xl font-bold font-outfit text-white">Projects Manager</h2>
+          <h2 className="text-3xl font-bold font-display text-white">Projects Manager</h2>
           <p className="text-gray-400 mt-1">Add, edit, or remove projects from your portfolio.</p>
         </div>
       </div>
@@ -167,9 +167,9 @@ const ProjectsManager = () => {
         
         {/* Add/Edit Form */}
         <div className="xl:col-span-1">
-          <div className="glass-card p-6 rounded-2xl border border-white/5 sticky top-24">
+          <div className="card p-6 rounded-2xl border border-white/5 sticky top-24">
             <div className="flex items-center justify-between mb-6">
-              <h3 className="text-xl font-bold font-outfit text-white flex items-center gap-2">
+              <h3 className="text-xl font-bold font-display text-white flex items-center gap-2">
                 {editingId ? <Pencil className="w-5 h-5 text-primary" /> : <Plus className="w-5 h-5 text-primary" />}
                 {editingId ? 'Edit Project' : 'Add New Project'}
               </h3>
@@ -250,16 +250,16 @@ const ProjectsManager = () => {
 
         {/* Projects List */}
         <div className="xl:col-span-2 space-y-4">
-          <h3 className="text-xl font-bold font-outfit text-white mb-6">Current Projects</h3>
+          <h3 className="text-xl font-bold font-display text-white mb-6">Current Projects</h3>
           
           {loading ? (
             <div className="flex justify-center p-10"><Loader2 className="w-8 h-8 animate-spin text-primary" /></div>
           ) : projects.length === 0 ? (
-            <div className="text-center p-10 glass-card rounded-2xl border border-white/5 text-gray-400">No projects found.</div>
+            <div className="text-center p-10 card rounded-2xl border border-white/5 text-gray-400">No projects found.</div>
           ) : (
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               {projects.map(project => (
-                <div key={project.id} className="glass-card rounded-2xl border border-white/5 overflow-hidden group">
+                <div key={project.id} className="card rounded-2xl border border-white/5 overflow-hidden group">
                   <div className="h-40 overflow-hidden relative">
                     <img src={project.imageUrl} alt={project.title} className={`w-full h-full object-cover transition-transform duration-500 group-hover:scale-110 ${project.isPublished === false ? 'grayscale opacity-50' : ''}`} />
                     <div className="absolute inset-0 bg-gradient-to-t from-dark-900 to-transparent" />

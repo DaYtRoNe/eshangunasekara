@@ -82,7 +82,7 @@ const MessagesManager = () => {
     <div className="animate-in fade-in slide-in-from-bottom-4 duration-500 h-[calc(100vh-100px)] flex flex-col">
       <div className="flex items-center justify-between mb-8 flex-shrink-0">
         <div>
-          <h2 className="text-3xl font-bold font-outfit text-white flex items-center gap-3">
+          <h2 className="text-3xl font-bold font-display text-white flex items-center gap-3">
             <Inbox className="w-8 h-8 text-primary" />
             Inbox
           </h2>
@@ -93,7 +93,7 @@ const MessagesManager = () => {
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 flex-grow overflow-hidden">
         
         {/* Messages List */}
-        <div className="lg:col-span-1 glass-card rounded-2xl border border-white/5 flex flex-col overflow-hidden h-full">
+        <div className="lg:col-span-1 card rounded-2xl border border-white/5 flex flex-col overflow-hidden h-full">
           <div className="p-4 border-b border-white/5 bg-dark-800/50 flex-shrink-0">
             <h3 className="font-semibold text-white">All Messages</h3>
           </div>
@@ -141,7 +141,7 @@ const MessagesManager = () => {
         </div>
 
         {/* Message Detail View */}
-        <div className="lg:col-span-2 glass-card rounded-2xl border border-white/5 flex flex-col h-full overflow-hidden">
+        <div className="lg:col-span-2 card rounded-2xl border border-white/5 flex flex-col h-full overflow-hidden">
           {selectedMessage ? (
             <>
               <div className="p-6 border-b border-white/5 bg-dark-800/50 flex-shrink-0">

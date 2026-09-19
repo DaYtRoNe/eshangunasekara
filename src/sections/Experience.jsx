@@ -1,122 +1,52 @@
-import React, { useRef, useState, useEffect } from 'react';
-import { motion, useScroll, useTransform } from 'framer-motion';
-import { Briefcase, Building2, GraduationCap, AlertTriangle, RefreshCw } from 'lucide-react';
+import React, { useState, useEffect } from 'react';
+import { motion } from 'framer-motion';
+import { AlertTriangle, RefreshCw } from 'lucide-react';
 
 import { collection, getDocs, orderBy, query } from 'firebase/firestore';
 import { db } from '../config/firebase';
 import { getFetchErrorMessage } from '../utils/fetchError';
+import SectionHeading from '../components/SectionHeading';
 
-const ExperienceItem = ({ exp, isLast }) => {
-  const ref = useRef(null);
-  
-  // Track scroll progress for this specific item's section of the page
-  const { scrollYProgress } = useScroll({
-    target: ref,
-    offset: ["start center", "end center"]
-  });
-
-  // Animate the timeline dot when the item comes into view
-  const dotColor = useTransform(scrollYProgress, [0, 0.2], ["rgba(255,255,255,0.1)", "rgba(170,59,255,1)"]);
-  const dotScale = useTransform(scrollYProgress, [0, 0.2], [0.8, 1.2]);
-  const dotShadow = useTransform(scrollYProgress, [0, 0.2], ["0px 0px 0px rgba(170,59,255,0)", "0px 0px 20px rgba(170,59,255,0.8)"]);
-  
-  return (
-    <div ref={ref} className="relative pl-8 md:pl-0 mb-16 last:mb-0">
-      <div className="md:grid md:grid-cols-5 md:gap-8 items-start relative">
-        
-        {/* Timeline Background Line (Mobile) */}
-        {!isLast && (
-          <div className="md:hidden absolute left-[7px] top-6 bottom-[-64px] w-[2px] bg-white/5 rounded-full" />
-        )}
-        {/* Animated Fill Line (Mobile) */}
-        {!isLast && (
-          <motion.div 
-            className="md:hidden absolute left-[7px] top-6 bottom-[-64px] w-[2px] bg-gradient-to-b from-primary via-indigo-500 to-primary origin-top shadow-[0_0_10px_rgba(170,59,255,0.5)] rounded-full z-0"
-            style={{ scaleY: scrollYProgress }}
-          />
-        )}
-        
-        {/* Timeline Dot (Mobile) */}
-        <motion.div 
-          style={{ backgroundColor: dotColor, scale: dotScale, boxShadow: dotShadow }}
-          className="md:hidden absolute left-0 top-2 w-4 h-4 rounded-full ring-4 ring-primary/20 z-10 border border-dark-900" 
-        />
-
-        {/* Period (Desktop Left) */}
-        <motion.div 
-          initial={{ opacity: 0, x: -30 }}
-          whileInView={{ opacity: 1, x: 0 }}
-          viewport={{ once: false, amount: 0.5 }}
-          className="hidden md:block md:col-span-1 pt-2 text-right"
-        >
-          <span className="text-primary font-bold text-lg tracking-wide bg-primary/10 px-4 py-1.5 rounded-full inline-block border border-primary/20">{exp.period}</span>
-        </motion.div>
-
-        {/* Timeline Line/Dot (Desktop Center) */}
-        <div className="hidden md:flex flex-col items-center justify-start h-full relative z-0">
-          <motion.div 
-            style={{ backgroundColor: dotColor, scale: dotScale, boxShadow: dotShadow }}
-            className="w-5 h-5 rounded-full ring-4 ring-primary/20 z-10 mt-2 border-2 border-dark-900" 
-          />
-          
-          {/* Static Background Line */}
-          {!isLast && (
-            <div className="absolute top-8 bottom-[-64px] w-[2px] bg-white/5 rounded-full z-0" />
-          )}
-          {/* Animated Fill Line */}
-          {!isLast && (
-            <motion.div 
-              className="absolute top-8 bottom-[-64px] w-[2px] bg-gradient-to-b from-primary via-indigo-500 to-primary origin-top shadow-[0_0_15px_rgba(170,59,255,0.8)] rounded-full z-10"
-              style={{ scaleY: scrollYProgress }} 
-            />
-          )}
-        </div>
-
-        {/* Content */}
-        <motion.div 
-          initial={{ opacity: 0, x: 50 }}
-          whileInView={{ opacity: 1, x: 0 }}
-          viewport={{ once: false, amount: 0.2 }}
-          transition={{ duration: 0.7, type: "spring", bounce: 0.3 }}
-          className="md:col-span-3 pb-4"
-        >
-          <motion.div 
-            whileHover={{ scale: 1.02, x: 5 }}
-            transition={{ type: "spring", stiffness: 300, damping: 20 }}
-            className="glass-card p-6 md:p-8 relative hover:border-primary/40 transition-colors shadow-lg hover:shadow-primary/20 group overflow-hidden"
-          >
-            {/* Subtle Gradient Glow inside card */}
-            <div className="absolute inset-0 bg-gradient-to-br from-primary/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
-            
-            {/* Period (Mobile only) */}
-            <span className="md:hidden inline-block px-4 py-1.5 bg-primary/10 border border-primary/20 text-primary text-sm font-bold rounded-full mb-4">
-              {exp.period}
-            </span>
-            
-            <h3 className="text-2xl font-bold text-white mb-2">{exp.role}</h3>
-            
-            <div className="flex items-center gap-2 mb-6">
-              {exp.icon}
-              <h4 className="text-lg text-gray-300 font-medium">{exp.company}</h4>
-            </div>
-            
-            <ul className="space-y-4 relative z-10">
-              {exp.responsibilities.map((task, tIdx) => (
-                <li key={tIdx} className="flex items-start gap-3 group/item">
-                  <span className="w-2 h-2 rounded-full bg-white/20 group-hover/item:bg-primary mt-2 flex-shrink-0 transition-colors shadow-[0_0_10px_rgba(170,59,255,0)] group-hover/item:shadow-[0_0_10px_rgba(170,59,255,0.8)]" />
-                  <span className="text-gray-400 group-hover/item:text-gray-200 leading-relaxed transition-colors">{task}</span>
-                </li>
-              ))}
-            </ul>
-          </motion.div>
-        </motion.div>
-      </div>
+const TimelineItem = ({ item, index }) => (
+  <motion.li
+    initial={{ opacity: 0, y: 16 }}
+    whileInView={{ opacity: 1, y: 0 }}
+    viewport={{ once: true, amount: 0.3 }}
+    transition={{ duration: 0.4, delay: index * 0.05 }}
+    className="group grid grid-cols-[1.5rem_1fr] md:grid-cols-[9rem_2rem_1fr] gap-x-4 md:gap-x-6 pb-12 last:pb-0"
+  >
+    {/* Period (desktop column) */}
+    <div className="hidden md:block text-right pt-0.5">
+      <span className="text-sm font-mono text-gray-500">{item.period}</span>
     </div>
-  );
-};
+
+    {/* Marker + line */}
+    <div className="relative flex justify-center" aria-hidden="true">
+      <span className="absolute top-2 bottom-0 w-px bg-white/10 group-last:hidden" />
+      <span className="relative mt-1.5 w-3 h-3 rounded-full bg-primary ring-4 ring-dark-900" />
+    </div>
+
+    {/* Content */}
+    <div>
+      <span className="md:hidden block text-sm font-mono text-gray-500 mb-1">{item.period}</span>
+      <h3 className="text-xl font-semibold text-white">{item.title}</h3>
+      <p className="text-gray-400 mb-4">{item.place}</p>
+      {item.points.length > 0 && (
+        <ul className="space-y-2 text-gray-300">
+          {item.points.map((point, i) => (
+            <li key={i} className="flex gap-3">
+              <span className="mt-2.5 w-1 h-1 rounded-full bg-gray-500 shrink-0" aria-hidden="true" />
+              <span>{point}</span>
+            </li>
+          ))}
+        </ul>
+      )}
+    </div>
+  </motion.li>
+);
 
 const Experience = () => {
-  const [experiences, setExperiences] = useState([]);
+  const [items, setItems] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [reloadKey, setReloadKey] = useState(0);
@@ -133,34 +63,29 @@ const Experience = () => {
           getDocs(query(collection(db, 'education'), orderBy('createdAt', 'desc')))
         ]);
 
-        const expData = expSnap.docs.map(doc => {
+        const work = expSnap.docs.map(doc => {
           const data = doc.data();
           return {
-            role: data.role,
-            company: data.company,
+            title: data.role,
+            place: data.company,
             period: data.period || data.duration || '',
-            responsibilities: data.description || [],
-            icon: <Building2 className="w-5 h-5 text-gray-400" />,
+            points: data.description || [],
             createdAt: data.createdAt
           };
         });
 
-        const eduData = eduSnap.docs.map(doc => {
+        const education = eduSnap.docs.map(doc => {
           const data = doc.data();
           return {
-            role: data.degree,
-            company: data.institution || data.university || '',
+            title: data.degree,
+            place: data.institution || data.university || '',
             period: data.period || data.duration || '',
-            responsibilities: data.details ? data.details.split(/\r?\n|\\n/).map(d => d.trim()).filter(Boolean) : [],
-            icon: <GraduationCap className="w-5 h-5 text-gray-400" />,
+            points: data.details ? data.details.split(/\r?\n|\\n/).map(d => d.trim()).filter(Boolean) : [],
             createdAt: data.createdAt
           };
         });
 
-        // Combine and sort by createdAt descending
-        const combined = [...expData, ...eduData].sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
-        
-        setExperiences(combined);
+        setItems([...work, ...education].sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt)));
       } catch (err) {
         console.error("Error fetching experience data:", err);
         setError(getFetchErrorMessage(err));
@@ -172,45 +97,31 @@ const Experience = () => {
   }, [reloadKey]);
 
   return (
-    <section id="experience" className="py-24 relative bg-dark-900/50">
-      <div className="container mx-auto px-6 md:px-12 relative z-10">
-        <motion.div
-          initial={{ opacity: 0, y: -30 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: false, amount: 0.2 }}
-          transition={{ duration: 0.6, type: "spring" }}
-          className="flex flex-col items-center mb-20"
-        >
-          <div className="inline-flex items-center justify-center p-3 glass rounded-2xl mb-4">
-            <Briefcase className="w-8 h-8 text-primary" />
-          </div>
-          <h2 className="text-4xl md:text-5xl font-bold font-outfit mb-4 text-white">Experience & Education</h2>
-          <div className="w-24 h-1 bg-gradient-to-r from-primary to-transparent rounded-full" />
-        </motion.div>
+    <section id="experience" className="py-24 border-t border-white/5">
+      <div className="container mx-auto px-6 md:px-12">
+        <SectionHeading eyebrow="Background" title="Experience and education" />
 
-        <div className="max-w-5xl mx-auto">
+        <div className="max-w-5xl">
           {loading ? (
-             <div className="text-center text-gray-400">Loading experience...</div>
+            <p className="text-gray-500">Loading…</p>
           ) : error ? (
-            <div className="max-w-xl mx-auto glass rounded-3xl border border-red-500/20 p-8 text-center">
+            <div className="max-w-xl card p-8 text-center">
               <AlertTriangle className="w-8 h-8 text-red-400 mx-auto mb-4" />
-              <h3 className="text-white font-semibold mb-2">Couldn't load experience</h3>
+              <h3 className="text-white font-semibold mb-2">Couldn't load this section</h3>
               <p className="text-gray-400 text-sm mb-6">{error}</p>
               <button
                 onClick={retry}
-                className="inline-flex items-center gap-2 px-5 py-2 rounded-full glass border border-white/10 text-sm text-white hover:border-primary/50 hover:bg-primary/10 transition-all"
+                className="inline-flex items-center gap-2 px-5 py-2 rounded-lg surface text-sm text-white hover:border-white/25 transition-colors"
               >
                 <RefreshCw className="w-4 h-4" /> Try again
               </button>
             </div>
           ) : (
-            experiences.map((exp, idx) => (
-              <ExperienceItem 
-                key={idx} 
-                exp={exp} 
-                isLast={idx === experiences.length - 1} 
-              />
-            ))
+            <ol>
+              {items.map((item, i) => (
+                <TimelineItem key={`${item.title}-${i}`} item={item} index={i} />
+              ))}
+            </ol>
           )}
         </div>
       </div>

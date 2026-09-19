@@ -73,12 +73,12 @@ const AdminLogin = () => {
       <div className="absolute bottom-1/4 right-1/4 w-[400px] h-[400px] bg-indigo-500/10 rounded-full blur-[100px] pointer-events-none mix-blend-screen" />
 
       <div className="w-full max-w-md relative z-10">
-        <div className="glass-card p-8 md:p-10 shadow-2xl">
+        <div className="card p-8 md:p-10 shadow-2xl">
           <div className="flex flex-col items-center mb-8">
             <div className="w-16 h-16 bg-primary/20 rounded-2xl flex items-center justify-center mb-4 border border-primary/30 shadow-[0_0_20px_rgba(170,59,255,0.3)]">
               <Shield className="w-8 h-8 text-primary" />
             </div>
-            <h1 className="text-3xl font-bold font-outfit text-white tracking-wide">System Access</h1>
+            <h1 className="text-3xl font-bold font-display text-white tracking-wide">System Access</h1>
             <p className="text-gray-400 mt-2 text-sm text-center">Authorized personnel only.</p>
           </div>
 

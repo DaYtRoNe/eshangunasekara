@@ -1,11 +1,10 @@
 import React, { useState, useEffect } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
 import { collection, getDocs, orderBy, query } from 'firebase/firestore';
 import { db } from '../config/firebase';
-import { Globe, Smartphone, Monitor, ArrowLeft, Search, Filter, AlertTriangle, RefreshCw } from 'lucide-react';
+import { ArrowLeft, Search, AlertTriangle, RefreshCw } from 'lucide-react';
 import { getFetchErrorMessage } from '../utils/fetchError';
+import { categoryIcon } from '../utils/categoryIcon';
 import { Link } from 'react-router-dom';
-import AnimatedBackground from '../components/AnimatedBackground';
 import SEO from '../components/SEO';
 import ProjectCard from '../components/ProjectCard';
 
@@ -19,7 +18,6 @@ const AllProjects = () => {
   const [activeFilter, setActiveFilter] = useState('All');
   const [searchQuery, setSearchQuery] = useState('');
   const [sortOrder, setSortOrder] = useState('newest');
-  const [hoveredIndex, setHoveredIndex] = useState(null);
 
   const retry = () => setReloadKey(k => k + 1);
 
@@ -33,17 +31,12 @@ const AllProjects = () => {
         const querySnapshot = await getDocs(q);
         const data = querySnapshot.docs
           .map(doc => ({ id: doc.id, ...doc.data() }))
-          .filter(p => p.isPublished !== false);
-        
-        const mappedData = data.map(p => {
-          const category = p.category || 'Web';
-          let icon = <Globe className="w-5 h-5" />;
-          if (category === 'Mobile') icon = <Smartphone className="w-5 h-5" />;
-          if (category === 'Desktop') icon = <Monitor className="w-5 h-5" />;
-          return { ...p, category, icon };
-        });
-
-        setProjects(mappedData);
+          .filter(p => p.isPublished !== false)
+          .map(p => {
+            const category = p.category || 'Web';
+            return { ...p, category, icon: categoryIcon(category) };
+          });
+        setProjects(data);
       } catch (err) {
         console.error("Error fetching projects", err);
         setError(getFetchErrorMessage(err));
@@ -54,77 +47,60 @@ const AllProjects = () => {
     fetchProjects();
   }, [reloadKey]);
 
-  // Filter & Sort Logic
-  const filteredProjects = projects.filter(p => {
-    const matchesFilter = activeFilter === 'All' || p.category === activeFilter;
-    const matchesSearch = 
-      p.title.toLowerCase().includes(searchQuery.toLowerCase()) || 
-      (p.tech && p.tech.some(t => t.toLowerCase().includes(searchQuery.toLowerCase())));
-    return matchesFilter && matchesSearch;
-  }).sort((a, b) => {
-    if (sortOrder === 'newest') {
-      return new Date(b.createdAt) - new Date(a.createdAt);
-    } else {
-      return new Date(a.createdAt) - new Date(b.createdAt);
-    }
-  });
+  const search = searchQuery.trim().toLowerCase();
+  const filteredProjects = projects
+    .filter(p => activeFilter === 'All' || p.category === activeFilter)
+    .filter(p => !search || p.title.toLowerCase().includes(search) || (p.tech || []).some(t => t.toLowerCase().includes(search)))
+    .sort((a, b) => sortOrder === 'newest'
+      ? new Date(b.createdAt) - new Date(a.createdAt)
+      : new Date(a.createdAt) - new Date(b.createdAt));
 
   return (
-    <div className="min-h-screen bg-dark-900 text-white font-inter selection:bg-primary/30 selection:text-white relative overflow-hidden">
-      <SEO 
-        title="All Projects | Eshan Gunasekara"
-        description="Browse through the complete portfolio of Eshan Gunasekara's software engineering projects. Web apps, Mobile apps, and Desktop applications."
+    <div className="min-h-screen bg-dark-900 text-gray-300">
+      <SEO
+        title="Projects | Eshan Gunasekara"
+        description="All of Eshan Gunasekara's projects: web apps, Android apps and Java desktop apps."
         url="https://eshangunasekara.vercel.app/projects"
       />
-      <AnimatedBackground />
 
-      {/* Main Content */}
-      <div className="container mx-auto px-6 md:px-12 py-12 relative z-10 max-w-7xl">
-        
-        {/* Header Section */}
-        <div className="mb-12">
-          <Link to="/" className="inline-flex items-center gap-2 text-gray-400 hover:text-white transition-colors mb-8 group">
-            <ArrowLeft className="w-4 h-4 transition-transform group-hover:-translate-x-1" />
-            Back to Home
-          </Link>
-          
-          <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6 }}>
-            <h1 className="text-4xl md:text-6xl font-bold font-outfit mb-4">
-              All <span className="text-primary">Projects</span>
-            </h1>
-            <p className="text-gray-400 max-w-2xl text-lg">
-              Browse through my complete portfolio of {projects.length} projects, ranging from full-stack web applications to mobile apps and custom management systems.
-            </p>
-          </motion.div>
+      <div className="container mx-auto px-6 md:px-12 py-12 max-w-7xl">
+        <Link to="/" className="inline-flex items-center gap-2 text-gray-400 hover:text-white transition-colors mb-10">
+          <ArrowLeft className="w-4 h-4" />
+          Back to home
+        </Link>
+
+        <div className="mb-10 max-w-2xl">
+          <h1 className="text-4xl md:text-5xl font-bold text-white mb-3">All projects</h1>
+          <p className="text-gray-400 text-lg">
+            {projects.length > 0 ? `${projects.length} projects. ` : ''}Search by name or by a technology, or filter by type.
+          </p>
         </div>
 
-        {/* Filter Bar */}
-        <motion.div 
-          initial={{ opacity: 0, y: 20 }} 
-          animate={{ opacity: 1, y: 0 }} 
-          transition={{ duration: 0.6, delay: 0.2 }}
-          className="glass rounded-2xl p-4 flex flex-col lg:flex-row items-center gap-6 mb-12 border border-white/5"
-        >
-          {/* Search */}
-          <div className="relative w-full lg:w-1/3">
-            <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
-            <input 
-              type="text" 
-              placeholder="Search by name or tech..." 
+        {/* Controls */}
+        <div className="flex flex-col lg:flex-row lg:items-center gap-4 mb-10">
+          <label className="relative w-full lg:w-80">
+            <span className="sr-only">Search projects</span>
+            <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-500" aria-hidden="true" />
+            <input
+              type="search"
+              placeholder="Search by name or tech"
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              className="w-full bg-dark-800 border border-white/10 rounded-xl pl-12 pr-4 py-3 text-sm focus:outline-none focus:border-primary/50 text-white"
+              className="w-full bg-dark-800 border border-white/10 rounded-md pl-9 pr-3 py-2 text-sm text-white placeholder:text-gray-500 focus:outline-none focus:border-white/30"
             />
-          </div>
+          </label>
 
-          {/* Categories */}
-          <div className="flex-1 flex flex-wrap justify-center gap-2">
+          <div className="flex flex-wrap items-center gap-2" role="group" aria-label="Filter projects by type">
             {categories.map((cat) => (
               <button
                 key={cat}
+                type="button"
                 onClick={() => setActiveFilter(cat)}
-                className={`px-5 py-2 rounded-full text-sm font-medium transition-colors ${
-                  activeFilter === cat ? 'bg-primary text-white shadow-[0_0_15px_rgba(170,59,255,0.4)]' : 'bg-dark-800 text-gray-400 hover:text-white hover:bg-dark-700 border border-white/5'
+                aria-pressed={activeFilter === cat}
+                className={`px-4 py-1.5 rounded-md text-sm font-medium border transition-colors ${
+                  activeFilter === cat
+                    ? 'bg-white/10 border-white/20 text-white'
+                    : 'border-transparent text-gray-400 hover:text-white hover:bg-white/5'
                 }`}
               >
                 {cat}
@@ -132,63 +108,44 @@ const AllProjects = () => {
             ))}
           </div>
 
-          {/* Sort */}
-          <div className="w-full lg:w-auto flex justify-end">
-            <div className="relative group">
-              <div className="flex items-center gap-2 bg-dark-800 border border-white/10 rounded-xl px-4 py-3 text-sm">
-                <Filter className="w-4 h-4 text-gray-400" />
-                <select 
-                  value={sortOrder}
-                  onChange={(e) => setSortOrder(e.target.value)}
-                  className="bg-transparent text-white focus:outline-none appearance-none pr-6"
-                >
-                  <option value="newest" className="bg-dark-900 text-white">Date (Newest)</option>
-                  <option value="oldest" className="bg-dark-900 text-white">Date (Oldest)</option>
-                </select>
-                <div className="absolute right-4 pointer-events-none text-gray-400 text-xs">▼</div>
-              </div>
-            </div>
-          </div>
-        </motion.div>
+          <label className="lg:ml-auto flex items-center gap-2 text-sm text-gray-400">
+            Sort
+            <select
+              value={sortOrder}
+              onChange={(e) => setSortOrder(e.target.value)}
+              className="bg-dark-800 border border-white/10 rounded-md px-3 py-2 text-sm text-white focus:outline-none focus:border-white/30"
+            >
+              <option value="newest">Newest first</option>
+              <option value="oldest">Oldest first</option>
+            </select>
+          </label>
+        </div>
 
-        {/* Projects Grid */}
         {loading ? (
           <div className="flex justify-center py-20">
-            <div className="w-10 h-10 border-4 border-primary/30 border-t-primary rounded-full animate-spin" />
+            <div className="w-8 h-8 border-2 border-white/10 border-t-primary rounded-full animate-spin" />
           </div>
         ) : error ? (
-          <div className="max-w-xl mx-auto glass rounded-3xl border border-red-500/20 p-8 text-center">
+          <div className="max-w-xl card p-8 text-center">
             <AlertTriangle className="w-8 h-8 text-red-400 mx-auto mb-4" />
-            <h3 className="text-white font-semibold mb-2">Couldn't load projects</h3>
+            <h2 className="text-white font-semibold mb-2">Couldn't load projects</h2>
             <p className="text-gray-400 text-sm mb-6">{error}</p>
             <button
               onClick={retry}
-              className="inline-flex items-center gap-2 px-5 py-2 rounded-full glass border border-white/10 text-sm text-white hover:border-primary/50 hover:bg-primary/10 transition-all"
+              className="inline-flex items-center gap-2 px-5 py-2 rounded-lg surface text-sm text-white hover:border-white/25 transition-colors"
             >
               <RefreshCw className="w-4 h-4" /> Try again
             </button>
           </div>
         ) : filteredProjects.length === 0 ? (
-          <div className="text-center py-20 text-gray-400 glass rounded-3xl border border-white/5">
-            No projects found matching your search.
-          </div>
+          <p className="py-20 text-center text-gray-500">Nothing matches that search.</p>
         ) : (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-            <AnimatePresence mode="popLayout">
-              {filteredProjects.map((project) => (
-                <ProjectCard
-                  key={project.id}
-                  project={project}
-                  isHovered={hoveredIndex === project.id}
-                  isAnotherHovered={hoveredIndex !== null && hoveredIndex !== project.id}
-                  onHoverStart={() => setHoveredIndex(project.id)}
-                  onHoverEnd={() => setHoveredIndex(null)}
-                />
-              ))}
-            </AnimatePresence>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {filteredProjects.map((project) => (
+              <ProjectCard key={project.id} project={project} />
+            ))}
           </div>
         )}
-
       </div>
     </div>
   );

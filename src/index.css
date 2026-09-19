@@ -1,41 +1,32 @@
-@import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Plus+Jakarta+Sans:wght@400;500;600&display=swap');
 @import "tailwindcss";
 
 @theme {
   --color-primary: #aa3bff;
   --color-primary-dark: #8b2bde;
-  
+
+  --color-dark-950: #070707;
   --color-dark-900: #0a0a0a;
   --color-dark-800: #121212;
   --color-dark-700: #1a1a1a;
-  
-  --color-glass: rgba(255, 255, 255, 0.05);
-  --color-glass-border: rgba(255, 255, 255, 0.1);
 
-  --font-inter: 'Plus Jakarta Sans', sans-serif;
-  --font-outfit: 'Space Grotesk', sans-serif;
+  --font-sans: 'Plus Jakarta Sans', ui-sans-serif, system-ui, sans-serif;
+  --font-display: 'Space Grotesk', ui-sans-serif, system-ui, sans-serif;
 }
 
 @layer base {
-
   :root {
     color-scheme: dark;
   }
 
   body {
-    @apply bg-dark-900 text-gray-300 font-inter antialiased overflow-x-hidden;
-    background-color: #0a0a0a;
-    background-image: 
-      radial-gradient(at 0% 0%, rgba(170, 59, 255, 0.15) 0px, transparent 50%),
-      radial-gradient(at 100% 100%, rgba(170, 59, 255, 0.1) 0px, transparent 50%);
-    background-attachment: fixed;
+    @apply bg-dark-900 text-gray-300 font-sans antialiased overflow-x-hidden;
   }
 
   h1, h2, h3, h4, h5, h6 {
-    @apply font-outfit text-white;
+    @apply font-display text-white;
   }
 
-  /* Custom Scrollbar */
   ::-webkit-scrollbar {
     width: 8px;
   }
@@ -46,58 +37,35 @@
     background: #2a2a2a;
     border-radius: 4px;
   }
-  ::-webkit-scrollbar-thumb:hover {
-    background: #aa3bff;
-  }
 
-  /* Selection */
   ::selection {
     background-color: rgba(170, 59, 255, 0.3);
     color: white;
   }
+
+  /* Keep focus visible for keyboard users */
+  :focus-visible {
+    outline: 2px solid var(--color-primary);
+    outline-offset: 2px;
+  }
 }
 
 @layer utilities {
-  .glass {
-    @apply bg-white/5 backdrop-blur-md border border-white/10;
-  }
-  
-  .glass-card {
-    @apply bg-white/[0.02] backdrop-blur-lg border border-white/5 rounded-2xl hover:border-white/10 transition-colors duration-300;
+  /* Basic surfaces. No blur: it is expensive and most of the page used it. */
+  .surface {
+    @apply bg-white/5 border border-white/10;
   }
 
-  .text-gradient {
-    @apply bg-clip-text text-transparent bg-gradient-to-r from-purple-400 to-indigo-500;
+  .card {
+    @apply bg-white/[0.03] border border-white/10 rounded-2xl;
   }
+}
 
-  .animated-gradient-text {
-    background: linear-gradient(
-      to right,
-      #aa3bff,
-      #6366f1,
-      #3b82f6,
-      #14b8a6,
-      #aa3bff
-    );
-    background-size: 200% auto;
-    color: transparent;
-    -webkit-background-clip: text;
-    background-clip: text;
-    animation: shine 5s linear infinite;
-  }
-
-  @keyframes shine {
-    to {
-      background-position: 200% center;
-    }
-  }
-
-  .animate-shimmer {
-    animation: shimmer 1.5s infinite linear;
-  }
-  
-  @keyframes shimmer {
-    0% { transform: translateX(-100%); }
-    100% { transform: translateX(100%); }
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
   }
 }

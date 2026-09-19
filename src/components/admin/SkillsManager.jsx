@@ -107,15 +107,15 @@ const SkillsManager = () => {
   return (
     <div className="animate-in fade-in slide-in-from-bottom-4 duration-500">
       <div className="mb-8">
-        <h2 className="text-3xl font-bold font-outfit text-white">Skills Manager</h2>
+        <h2 className="text-3xl font-bold font-display text-white">Skills Manager</h2>
         <p className="text-gray-400 mt-1">Group and display your technical expertise.</p>
       </div>
 
       <div className="grid grid-cols-1 xl:grid-cols-3 gap-8">
         <div className="xl:col-span-1">
-          <div className="glass-card p-6 rounded-2xl border border-white/5 sticky top-24">
+          <div className="card p-6 rounded-2xl border border-white/5 sticky top-24">
             <div className="flex items-center justify-between mb-6">
-              <h3 className="text-xl font-bold font-outfit text-white flex items-center gap-2">
+              <h3 className="text-xl font-bold font-display text-white flex items-center gap-2">
                 {editingId ? <Pencil className="w-5 h-5 text-primary" /> : <Plus className="w-5 h-5 text-primary" />}
                 {editingId ? 'Edit Skill Category' : 'Add Skill Category'}
               </h3>
@@ -146,16 +146,16 @@ const SkillsManager = () => {
         </div>
 
         <div className="xl:col-span-2 space-y-4">
-          <h3 className="text-xl font-bold font-outfit text-white mb-6">Current Skill Categories</h3>
+          <h3 className="text-xl font-bold font-display text-white mb-6">Current Skill Categories</h3>
           
           {loading ? (
             <div className="flex justify-center p-10"><Loader2 className="w-8 h-8 animate-spin text-primary" /></div>
           ) : skills.length === 0 ? (
-            <div className="text-center p-10 glass-card rounded-2xl border border-white/5 text-gray-400">No categories found.</div>
+            <div className="text-center p-10 card rounded-2xl border border-white/5 text-gray-400">No categories found.</div>
           ) : (
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               {skills.map(skill => (
-                <div key={skill.id} className="glass-card p-6 rounded-2xl border border-white/5 relative group">
+                <div key={skill.id} className="card p-6 rounded-2xl border border-white/5 relative group">
                   <div className="absolute top-4 right-4 flex gap-2">
                     <button 
                       onClick={() => handleEditClick(skill)}

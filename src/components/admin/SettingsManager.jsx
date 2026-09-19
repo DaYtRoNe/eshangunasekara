@@ -285,7 +285,7 @@ const SettingsManager = () => {
     <div className="animate-in fade-in slide-in-from-bottom-4 duration-500">
       <div className="flex items-center justify-between mb-8">
         <div>
-          <h2 className="text-3xl font-bold font-outfit text-white">General Settings</h2>
+          <h2 className="text-3xl font-bold font-display text-white">General Settings</h2>
           <p className="text-gray-400 mt-1">Update your personal information, CV, and social links.</p>
         </div>
         <button
@@ -303,8 +303,8 @@ const SettingsManager = () => {
         {/* Left Column */}
         <div className="space-y-8">
           {/* About Me Section */}
-          <div className="glass-card p-6 rounded-2xl border border-white/5">
-            <h3 className="text-xl font-bold font-outfit text-white mb-4 flex items-center gap-2">
+          <div className="card p-6 rounded-2xl border border-white/5">
+            <h3 className="text-xl font-bold font-display text-white mb-4 flex items-center gap-2">
               <User className="w-5 h-5 text-primary" />
               About Me
             </h3>
@@ -335,8 +335,8 @@ const SettingsManager = () => {
           </div>
 
           {/* Avatar Upload Section */}
-          <div className="glass-card p-6 rounded-2xl border border-white/5">
-            <h3 className="text-xl font-bold font-outfit text-white mb-4 flex items-center gap-2">
+          <div className="card p-6 rounded-2xl border border-white/5">
+            <h3 className="text-xl font-bold font-display text-white mb-4 flex items-center gap-2">
               <User className="w-5 h-5 text-primary" />
               Profile Avatar
             </h3>
@@ -390,8 +390,8 @@ const SettingsManager = () => {
           </div>
 
           {/* CV Upload Section */}
-          <div className="glass-card p-6 rounded-2xl border border-white/5">
-            <h3 className="text-xl font-bold font-outfit text-white mb-4 flex items-center gap-2">
+          <div className="card p-6 rounded-2xl border border-white/5">
+            <h3 className="text-xl font-bold font-display text-white mb-4 flex items-center gap-2">
               <FileText className="w-5 h-5 text-primary" />
               Curriculum Vitae (CV)
             </h3>
@@ -440,8 +440,8 @@ const SettingsManager = () => {
 
         {/* Right Column (Social Links & Security) */}
         <div className="space-y-8 h-fit">
-          <div className="glass-card p-6 rounded-2xl border border-white/5">
-            <h3 className="text-xl font-bold font-outfit text-white mb-6 flex items-center gap-2">
+          <div className="card p-6 rounded-2xl border border-white/5">
+            <h3 className="text-xl font-bold font-display text-white mb-6 flex items-center gap-2">
               <LinkIcon className="w-5 h-5 text-primary" />
               Social Links
             </h3>
@@ -494,8 +494,8 @@ const SettingsManager = () => {
           </div>
 
           {/* Security Settings (Change Password) */}
-          <div className="glass-card p-6 rounded-2xl border border-red-500/20 bg-red-950/10">
-            <h3 className="text-xl font-bold font-outfit text-white mb-2 flex items-center gap-2">
+          <div className="card p-6 rounded-2xl border border-red-500/20 bg-red-950/10">
+            <h3 className="text-xl font-bold font-display text-white mb-2 flex items-center gap-2">
               <ShieldCheck className="w-5 h-5 text-red-400" />
               Security Settings
             </h3>

@@ -47,7 +47,7 @@ const AdminSidebar = ({ activeTab, setActiveTab }) => {
           <div className="w-8 h-8 bg-primary/20 rounded-xl flex items-center justify-center border border-primary/30">
             <LayoutDashboard className="w-4 h-4 text-primary" />
           </div>
-          <div className="text-lg font-bold font-outfit text-white">Admin<span className="text-primary">.</span></div>
+          <div className="text-lg font-bold font-display text-white">Admin<span className="text-primary">.</span></div>
         </div>
         <button 
           onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)} 
@@ -71,7 +71,7 @@ const AdminSidebar = ({ activeTab, setActiveTab }) => {
           <div className="w-10 h-10 bg-primary/20 rounded-xl flex items-center justify-center border border-primary/30">
             <LayoutDashboard className="w-5 h-5 text-primary" />
           </div>
-          <div className="text-xl font-bold font-outfit text-white">Admin<span className="text-primary">.</span></div>
+          <div className="text-xl font-bold font-display text-white">Admin<span className="text-primary">.</span></div>
         </div>
 
         <nav className="flex-1 space-y-2 mt-4 md:mt-0">
